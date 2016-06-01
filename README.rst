@@ -7,6 +7,7 @@ Beckett
 
 .. image:: https://circleci.com/gh/phalt/beckett/tree/master.svg?style=svg
         :target: https://circleci.com/gh/phalt/beckett/tree/master
+        :alt: Test Status
 
 .. image:: https://readthedocs.org/projects/beckett/badge/?version=latest
         :target: https://readthedocs.org/projects/beckett/?badge=latest
