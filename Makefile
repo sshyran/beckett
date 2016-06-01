@@ -49,17 +49,14 @@ lint:
 	flake8 beckett tests
 
 test:
-py.test
+	py.test
 
 
 test-all:
 	tox
 
 coverage:
-coverage run --source beckett py.test
-
-	coverage report -m
-	coverage html
+	py.test --cov-report html --cov=beckett tests/
 	$(BROWSER) htmlcov/index.html
 
 docs:

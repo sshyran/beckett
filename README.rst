@@ -1,12 +1,12 @@
-===============================
+=======
 Beckett
-===============================
+=======
 
 .. image:: https://img.shields.io/pypi/v/beckett.svg
         :target: https://pypi.python.org/pypi/beckett
 
-.. image:: https://img.shields.io/travis/phalt/beckett.svg
-        :target: https://travis-ci.org/phalt/beckett
+.. image:: https://circleci.com/gh/phalt/beckett/tree/master.svg?style=svg
+    :target: https://circleci.com/gh/phalt/beckett/tree/master
 
 .. image:: https://readthedocs.org/projects/beckett/badge/?version=latest
         :target: https://readthedocs.org/projects/beckett/?badge=latest
