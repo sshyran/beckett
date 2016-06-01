@@ -6,7 +6,7 @@ Beckett
         :target: https://pypi.python.org/pypi/beckett
 
 .. image:: https://circleci.com/gh/phalt/beckett/tree/master.svg?style=svg
-    :target: https://circleci.com/gh/phalt/beckett/tree/master
+        :target: https://circleci.com/gh/phalt/beckett/tree/master
 
 .. image:: https://readthedocs.org/projects/beckett/badge/?version=latest
         :target: https://readthedocs.org/projects/beckett/?badge=latest
