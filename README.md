@@ -11,7 +11,7 @@ Beckett
 Hypermedia driven API Client Framework
 
 * Free software: ISC license
-* Documentation: https://beckett.readthedocs.org.
+* Documentation: https://phalt.github.io/beckett
 
 Features
 --------
