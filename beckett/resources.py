@@ -15,7 +15,7 @@ class BaseResource(object):
 
             class Meta:
                 name = 'Product'
-                identified = 'slug'
+                identifier = 'slug'
                 attributes = (
                     'slug',
                     'name',

@@ -1,1 +1,6 @@
 site_name: Beckett
+theme: readthedocs
+
+pages:
+    - Home: 'index.md'
+    - Introduction: 'intro.md'
