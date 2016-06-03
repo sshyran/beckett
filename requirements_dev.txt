@@ -15,6 +15,7 @@ Jinja2==2.8
 jinja2-time==0.1.0
 MarkupSafe==0.23
 mccabe==0.3.1
+mkdocs==0.15.3
 pathtools==0.1.2
 pep8==1.7.0
 pluggy==0.3.1
