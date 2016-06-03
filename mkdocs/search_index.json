@@ -1,0 +1,24 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Beckett\n\n\n\n\n\n\n\n\n\n\nHypermedia driven API Client Framework\n\n\n\n\nFree software: ISC license\n\n\nDocumentation: https://beckett.readthedocs.org.\n\n\n\n\nFeatures\n\n\n\n\nGenerates strictly typed response objects for resources. No more raw dictionaries!\n\n\nConfiguration for URL routing and response handling for each resource.\n\n\nGenerates a client around your HTTP API with methods for talking to each registered resource.\n\n\nMagically turns hypermedia links into methods for traversing your API.\n\n\nSupports multiple hypermedia response formats including HAL and JSONAPI.\n\n\n\n\nCredits\n\n\nThis package was created with \nCookiecutter\n.",
+            "title": "Home"
+        },
+        {
+            "location": "/#beckett",
+            "text": "Hypermedia driven API Client Framework   Free software: ISC license  Documentation: https://beckett.readthedocs.org.",
+            "title": "Beckett"
+        },
+        {
+            "location": "/#features",
+            "text": "Generates strictly typed response objects for resources. No more raw dictionaries!  Configuration for URL routing and response handling for each resource.  Generates a client around your HTTP API with methods for talking to each registered resource.  Magically turns hypermedia links into methods for traversing your API.  Supports multiple hypermedia response formats including HAL and JSONAPI.",
+            "title": "Features"
+        },
+        {
+            "location": "/#credits",
+            "text": "This package was created with  Cookiecutter .",
+            "title": "Credits"
+        }
+    ]
+}
