@@ -20,7 +20,6 @@ help:
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
-	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "release - package and upload a release"
 	@echo "dist - package"
 	@echo "install - install the package to the active Python's site-packages"
@@ -58,17 +57,6 @@ test-all:
 coverage:
 	py.test --cov-report html --cov=beckett tests/
 	$(BROWSER) htmlcov/index.html
-
-docs:
-	rm -f docs/beckett.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ beckett
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
-
-servedocs: docs
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
 release: clean
 	python setup.py sdist upload
