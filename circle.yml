@@ -8,3 +8,10 @@ test:
   override:
     - tox
     - py.test --cov=beckett tests/
+    - bash <(curl -s https://codecov.io/bash) -t de516f70-9a52-46ea-8389-02af1fbc5a37
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - mkdocs gh-deploy --clean
