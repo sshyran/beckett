@@ -32,5 +32,5 @@ This package was created with [Cookiecutter](https://github.com/audreyr/cookiecu
 [pypi-dl-image]: https://img.shields.io/pypi/dm/beckett.png
 [circle-image]: https://circleci.com/gh/phalt/beckett/tree/master.svg?style=svg
 [circle-link]: https://circleci.com/gh/phalt/beckett/tree/master
-[codecov-image]: http://codecov.io/github/phalt/beckett/coverage.svg?branch=master
+[codecov-image]: https://codecov.io/gh/phalt/beckett/branch/master/graph/badge.svg?token=T9mYPv0Ep2
 [codecov-link]: http://codecov.io/github/phalt/beckett?branch=master
