@@ -65,7 +65,7 @@ In this instance we're setting the `base_url` of the API, as well as a list of `
 
 A list of available attributes can be found on the [Clients](/clients) page.
 
-### Usage
+### Example Usage
 
 We can now start calling the API!
 

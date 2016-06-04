@@ -1,30 +1,40 @@
-Beckett
+💫 Beckett
 -------
+
+_Hypermedia API Client Framework_
 
 [![PyPi][pypi-image]][pypi-link]
 [![PyPi downloads][pypi-dl-image]][pypi-link]
 [![CircleCI][circle-image]][circle-link]
 [![Coverage Status][codecov-image]][codecov-link]
 
+![quantumleap](docs/media/leap.gif)
 
-Hypermedia driven API Client Framework
+Beckett is a convention-based framework for building Python interfaces around HTTP APIs.
 
-* Free software: ISC license
-* Documentation: https://phalt.github.io/beckett
+📚 [Documentation](https://phalt.github.io/beckett)
+----
 
-Features
+📖 Features
 --------
 
-* Generates strictly typed response objects for resources. No more raw dictionaries!
-* Configuration for URL routing and response handling for each resource.
-* Generates a client around your HTTP API with methods for talking to each registered resource.
-* Magically turns hypermedia links into methods for traversing your API.
-* Supports multiple hypermedia response formats including HAL and JSONAPI.
+* Define your Beckett client in Python instead of a data serialization language.
+* Resources are transformed into typed instances - no more raw dictionaries!
+* Automatic URL routing for RESTful interaction to your resources.
+* SSL, rate limiting, timeout, and HTTP handling.
+* Hypermedia relationship links are automagically resolved into python methods.
+* Supports hypermedia response formats such as JSONAPI and HAL.
+* Works out of the box, but each resource is completely configurable.
 
-Credits
+
+🎥 Credits
 ---------
 
 This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter).
+
+We use [Python Requests](http://docs.python-requests.org/en/master/) for talking HTTP.
+
+Free software: [ISC license](https://github.com/phalt/beckett/blob/master/LICENSE)
 
 
 [pypi-image]: https://img.shields.io/pypi/v/beckett.svg

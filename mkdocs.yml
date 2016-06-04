@@ -4,3 +4,4 @@ theme: readthedocs
 pages:
     - Home: 'index.md'
     - Introduction: 'intro.md'
+    - Resources: 'resources.md'
