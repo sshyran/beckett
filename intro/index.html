@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Introduction - Beckett</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_input_path = "intro.md";
+    var mkdocs_page_url = "/intro/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Beckett</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Introduction</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#introduction">Introduction</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#concepts">Concepts</a></li>
+                
+                    <li><a class="toctree-l4" href="#resources">Resources</a></li>
+                
+                    <li><a class="toctree-l4" href="#clients">Clients</a></li>
+                
+                    <li><a class="toctree-l4" href="#example-usage">Example Usage</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../resources/">Resources</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Beckett</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Introduction</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="introduction">Introduction</h2>
+<p>Beckett is a framework for developing <strong>flexible API Clients for HTTP API services</strong>.</p>
+<p>Beckett provides the base tools for creating resources and specifying how they should look, how their API acts, and
+what attributes are valid. Beckett lets you provide <strong>typed stateless instances</strong> of your resources and control the changes
+that are made to them.</p>
+<p>Beckett also helps you quickly create a client that understands what response codes are valid, how to paginate resources
+and also what response formats to expect.</p>
+<p>Beckett works best with <strong>hypermedia</strong> response formats such as <a href="http://stateless.co/hal_specification.html">HAL</a> and <a href="http://jsonapi.org">JSONAPI</a>, and will automagically transform hypermedia links into <strong>methods</strong> for communicating with related resources, as well as CRUD actions on the resources it gets.</p>
+<h2 id="concepts">Concepts</h2>
+<p>Beckett has two key base models that you'll need to configure in order to get started: <strong>Resources</strong> and <strong>Clients</strong>.</p>
+<h3 id="resources">Resources</h3>
+<p>A <strong>Resource</strong> object represents a single resource in your API service:</p>
+<pre><code class="python"># resources.py
+from beckett import resources
+
+class PokemonResource(resources.BaseResource):
+    class Meta:
+        name = 'Pokemon'
+        identifier = 'id'
+        attributes = (
+            'id',
+            'name',
+        )
+</code></pre>
+
+<p>Resources have a series of attributes in their <code>Meta</code> class. These define the attributes of a resource.</p>
+<p>In this instance, we are naming our resource with the <code>name</code> attribute. Defining unique <code>identifier</code>
+attribute to use when querying this resource, and setting a white list of <code>attributes</code> that we want to display on this resource.</p>
+<p>A full list of available attributes can be found on the <a href="../resources">Resources</a> page.</p>
+<h3 id="clients">Clients</h3>
+<p>A typical Beckett-based API client only needs one <strong>Client</strong> instance. Here we define the base url of our API:</p>
+<pre><code class="python"># clients.py
+from beckett import clients
+from .resources import PokemonResource
+
+class PokemonClient(clients.BaseClient):
+    class Meta:
+        base_url = 'https://pokeapi.co/api/v1/'
+        resources = (
+            PokemonResource,
+        )
+</code></pre>
+
+<p>Clients can be configured using <code>Meta</code> class attributes, and inherits the defaults from the <code>BaseClient</code>.</p>
+<p>In this instance we're setting the <code>base_url</code> of the API, as well as a list of <code>resources</code> that this API supports.</p>
+<p>A list of available attributes can be found on the <a href="../clients">Clients</a> page.</p>
+<h3 id="example-usage">Example Usage</h3>
+<p>We can now start calling the API!</p>
+<pre><code class="python">from clients import PokemonClient
+from resources import PokemonResource
+
+my_client = PokemonClient()
+result = my_client.get_pokemon(1)
+
+isinstance(result, PokemonResource)
+&gt;&gt;&gt; True
+result.name
+'Bulbasaur'
+</code></pre>
+
+<p>Our client generates a collection of methods for every registered resource and understands how to properly call each method.</p>
+<p>A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:</p>
+<pre><code class="python">my_client.get_pokemon(1)
+</code></pre>
+
+<p>The <code>PokemonClient</code> will look at <code>PokemonResource</code> <code>methods</code> attribute to determine what HTTP methods are available on it. The default is:</p>
+<pre><code class="python">methods = (
+        'get'
+    )
+</code></pre>
+
+<p>The <code>PokemonResource</code> will also set the resource name as the lower-case of the <code>name</code> attribute. However, if this resource is called something different in the API we can set it ourselves in <code>PokemonResource</code>:</p>
+<pre><code class="python">resource = 'pokemons'
+</code></pre>
+
+<p>The <code>1</code> will be used by the <code>identifier</code> attribute on <code>PokemonResource</code> to help construct the URL when making HTTP calls.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../resources/" class="btn btn-neutral float-right" title="Resources">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../resources/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

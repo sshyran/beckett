@@ -2,23 +2,73 @@
     "docs": [
         {
             "location": "/",
-            "text": "Beckett\n\n\n\n\n\n\n\n\n\n\nHypermedia driven API Client Framework\n\n\n\n\nFree software: ISC license\n\n\nDocumentation: https://beckett.readthedocs.org.\n\n\n\n\nFeatures\n\n\n\n\nGenerates strictly typed response objects for resources. No more raw dictionaries!\n\n\nConfiguration for URL routing and response handling for each resource.\n\n\nGenerates a client around your HTTP API with methods for talking to each registered resource.\n\n\nMagically turns hypermedia links into methods for traversing your API.\n\n\nSupports multiple hypermedia response formats including HAL and JSONAPI.\n\n\n\n\nCredits\n\n\nThis package was created with \nCookiecutter\n.",
+            "text": "\ud83d\udcab Beckett\n\n\nHypermedia API Client Framework\n\n\n\n\n\n\n\n\n\n\n\n\nBeckett is a convention-based framework for building Python interfaces around HTTP APIs.\n\n\n\ud83d\udcd6 Features\n\n\n\n\nDefine your Beckett client in Python instead of a data serialization language.\n\n\nResources are transformed into typed instances - no more raw dictionaries!\n\n\nAutomatic URL routing for RESTful interaction to your resources.\n\n\nSSL, rate limiting, timeout, and HTTP handling.\n\n\nHypermedia relationship links are automagically resolved into python methods.\n\n\nSupports hypermedia response formats such as JSONAPI and HAL.\n\n\nWorks out of the box, but each resource is completely configurable.\n\n\n\n\n\ud83c\udfa5 Credits\n\n\nThis package was created with \nCookiecutter\n.\n\n\nWe use \nPython Requests\n for talking HTTP.\n\n\nFree software: \nISC license",
             "title": "Home"
         },
         {
             "location": "/#beckett",
-            "text": "Hypermedia driven API Client Framework   Free software: ISC license  Documentation: https://beckett.readthedocs.org.",
-            "title": "Beckett"
+            "text": "Hypermedia API Client Framework       Beckett is a convention-based framework for building Python interfaces around HTTP APIs.",
+            "title": "\ud83d\udcab Beckett"
         },
         {
             "location": "/#features",
-            "text": "Generates strictly typed response objects for resources. No more raw dictionaries!  Configuration for URL routing and response handling for each resource.  Generates a client around your HTTP API with methods for talking to each registered resource.  Magically turns hypermedia links into methods for traversing your API.  Supports multiple hypermedia response formats including HAL and JSONAPI.",
-            "title": "Features"
+            "text": "Define your Beckett client in Python instead of a data serialization language.  Resources are transformed into typed instances - no more raw dictionaries!  Automatic URL routing for RESTful interaction to your resources.  SSL, rate limiting, timeout, and HTTP handling.  Hypermedia relationship links are automagically resolved into python methods.  Supports hypermedia response formats such as JSONAPI and HAL.  Works out of the box, but each resource is completely configurable.",
+            "title": "\ud83d\udcd6 Features"
         },
         {
             "location": "/#credits",
-            "text": "This package was created with  Cookiecutter .",
-            "title": "Credits"
+            "text": "This package was created with  Cookiecutter .  We use  Python Requests  for talking HTTP.  Free software:  ISC license",
+            "title": "\ud83c\udfa5 Credits"
+        },
+        {
+            "location": "/intro/",
+            "text": "Introduction\n\n\nBeckett is a framework for developing \nflexible API Clients for HTTP API services\n.\n\n\nBeckett provides the base tools for creating resources and specifying how they should look, how their API acts, and\nwhat attributes are valid. Beckett lets you provide \ntyped stateless instances\n of your resources and control the changes\nthat are made to them.\n\n\nBeckett also helps you quickly create a client that understands what response codes are valid, how to paginate resources\nand also what response formats to expect.\n\n\nBeckett works best with \nhypermedia\n response formats such as \nHAL\n and \nJSONAPI\n, and will automagically transform hypermedia links into \nmethods\n for communicating with related resources, as well as CRUD actions on the resources it gets.\n\n\nConcepts\n\n\nBeckett has two key base models that you'll need to configure in order to get started: \nResources\n and \nClients\n.\n\n\nResources\n\n\nA \nResource\n object represents a single resource in your API service:\n\n\n# resources.py\nfrom beckett import resources\n\nclass PokemonResource(resources.BaseResource):\n    class Meta:\n        name = 'Pokemon'\n        identifier = 'id'\n        attributes = (\n            'id',\n            'name',\n        )\n\n\n\n\nResources have a series of attributes in their \nMeta\n class. These define the attributes of a resource.\n\n\nIn this instance, we are naming our resource with the \nname\n attribute. Defining unique \nidentifier\n\nattribute to use when querying this resource, and setting a white list of \nattributes\n that we want to display on this resource.\n\n\nA full list of available attributes can be found on the \nResources\n page.\n\n\nClients\n\n\nA typical Beckett-based API client only needs one \nClient\n instance. Here we define the base url of our API:\n\n\n# clients.py\nfrom beckett import clients\nfrom .resources import PokemonResource\n\nclass PokemonClient(clients.BaseClient):\n    class Meta:\n        base_url = 'https://pokeapi.co/api/v1/'\n        resources = (\n            PokemonResource,\n        )\n\n\n\n\nClients can be configured using \nMeta\n class attributes, and inherits the defaults from the \nBaseClient\n.\n\n\nIn this instance we're setting the \nbase_url\n of the API, as well as a list of \nresources\n that this API supports.\n\n\nA list of available attributes can be found on the \nClients\n page.\n\n\nExample Usage\n\n\nWe can now start calling the API!\n\n\nfrom clients import PokemonClient\nfrom resources import PokemonResource\n\nmy_client = PokemonClient()\nresult = my_client.get_pokemon(1)\n\nisinstance(result, PokemonResource)\n>>> True\nresult.name\n'Bulbasaur'\n\n\n\n\nOur client generates a collection of methods for every registered resource and understands how to properly call each method.\n\n\nA lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:\n\n\nmy_client.get_pokemon(1)\n\n\n\n\nThe \nPokemonClient\n will look at \nPokemonResource\n \nmethods\n attribute to determine what HTTP methods are available on it. The default is:\n\n\nmethods = (\n        'get'\n    )\n\n\n\n\nThe \nPokemonResource\n will also set the resource name as the lower-case of the \nname\n attribute. However, if this resource is called something different in the API we can set it ourselves in \nPokemonResource\n:\n\n\nresource = 'pokemons'\n\n\n\n\nThe \n1\n will be used by the \nidentifier\n attribute on \nPokemonResource\n to help construct the URL when making HTTP calls.",
+            "title": "Introduction"
+        },
+        {
+            "location": "/intro/#introduction",
+            "text": "Beckett is a framework for developing  flexible API Clients for HTTP API services .  Beckett provides the base tools for creating resources and specifying how they should look, how their API acts, and\nwhat attributes are valid. Beckett lets you provide  typed stateless instances  of your resources and control the changes\nthat are made to them.  Beckett also helps you quickly create a client that understands what response codes are valid, how to paginate resources\nand also what response formats to expect.  Beckett works best with  hypermedia  response formats such as  HAL  and  JSONAPI , and will automagically transform hypermedia links into  methods  for communicating with related resources, as well as CRUD actions on the resources it gets.",
+            "title": "Introduction"
+        },
+        {
+            "location": "/intro/#concepts",
+            "text": "Beckett has two key base models that you'll need to configure in order to get started:  Resources  and  Clients .",
+            "title": "Concepts"
+        },
+        {
+            "location": "/intro/#resources",
+            "text": "A  Resource  object represents a single resource in your API service:  # resources.py\nfrom beckett import resources\n\nclass PokemonResource(resources.BaseResource):\n    class Meta:\n        name = 'Pokemon'\n        identifier = 'id'\n        attributes = (\n            'id',\n            'name',\n        )  Resources have a series of attributes in their  Meta  class. These define the attributes of a resource.  In this instance, we are naming our resource with the  name  attribute. Defining unique  identifier \nattribute to use when querying this resource, and setting a white list of  attributes  that we want to display on this resource.  A full list of available attributes can be found on the  Resources  page.",
+            "title": "Resources"
+        },
+        {
+            "location": "/intro/#clients",
+            "text": "A typical Beckett-based API client only needs one  Client  instance. Here we define the base url of our API:  # clients.py\nfrom beckett import clients\nfrom .resources import PokemonResource\n\nclass PokemonClient(clients.BaseClient):\n    class Meta:\n        base_url = 'https://pokeapi.co/api/v1/'\n        resources = (\n            PokemonResource,\n        )  Clients can be configured using  Meta  class attributes, and inherits the defaults from the  BaseClient .  In this instance we're setting the  base_url  of the API, as well as a list of  resources  that this API supports.  A list of available attributes can be found on the  Clients  page.",
+            "title": "Clients"
+        },
+        {
+            "location": "/intro/#example-usage",
+            "text": "We can now start calling the API!  from clients import PokemonClient\nfrom resources import PokemonResource\n\nmy_client = PokemonClient()\nresult = my_client.get_pokemon(1)\n\nisinstance(result, PokemonResource)\n>>> True\nresult.name\n'Bulbasaur'  Our client generates a collection of methods for every registered resource and understands how to properly call each method.  A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:  my_client.get_pokemon(1)  The  PokemonClient  will look at  PokemonResource   methods  attribute to determine what HTTP methods are available on it. The default is:  methods = (\n        'get'\n    )  The  PokemonResource  will also set the resource name as the lower-case of the  name  attribute. However, if this resource is called something different in the API we can set it ourselves in  PokemonResource :  resource = 'pokemons'  The  1  will be used by the  identifier  attribute on  PokemonResource  to help construct the URL when making HTTP calls.",
+            "title": "Example Usage"
+        },
+        {
+            "location": "/resources/",
+            "text": "Introduction\n\n\nResources are models relating to individual resources in an HTTP API.\n\n\nBaseResource\n\n\nA simple representation of a resource.\n\n\nExample:\n\n\n# myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )\n\n\n\n\n\nUsage:\n\n\n# Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'\n\n\n\n\n- attributes\n\n\nTODO",
+            "title": "Resources"
+        },
+        {
+            "location": "/resources/#introduction",
+            "text": "Resources are models relating to individual resources in an HTTP API.",
+            "title": "Introduction"
+        },
+        {
+            "location": "/resources/#baseresource",
+            "text": "A simple representation of a resource.  Example:  # myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )  Usage:  # Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'",
+            "title": "BaseResource"
+        },
+        {
+            "location": "/resources/#-attributes",
+            "text": "TODO",
+            "title": "- attributes"
         }
     ]
 }
