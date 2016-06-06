@@ -14,5 +14,4 @@ deployment:
   master:
     branch: master
     commands:
-      - git remote add origin git@github.com:phalt/beckett.git
       - mkdocs gh-deploy --remote-name origin --clean -v
