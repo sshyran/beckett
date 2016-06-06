@@ -13,6 +13,7 @@ flake8==2.4.1
 future==0.15.2
 Jinja2==2.8
 jinja2-time==0.1.0
+inflect==0.2.5
 MarkupSafe==0.23
 mccabe==0.3.1
 mkdocs==0.15.3

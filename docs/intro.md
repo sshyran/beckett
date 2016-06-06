@@ -103,5 +103,5 @@ The `1` will be used by the `identifier` attribute on `PokemonResource` to help 
 
 That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.
 
-[resources](/resources)
-[clients](/clients)
+[resources]: /resources
+[clients]: /clients

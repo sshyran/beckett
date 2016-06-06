@@ -15,8 +15,10 @@ with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
-    'requests',
-    'ujson'
+    'requests==2.10.0',
+    'ujson==1.35',
+    'inflect==0.2.5',
+    'six==1.10.0'
 ]
 
 test_requirements = [

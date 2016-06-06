@@ -10,6 +10,8 @@ Tests for `beckett.resources` module.
 
 from beckett.resources import BaseResource
 
+from tests.fixtures import PeopleResource
+
 
 def test_base_resource_attributes():
     """
@@ -18,18 +20,6 @@ def test_base_resource_attributes():
 
     model = BaseResource(id='1')
     assert model.__str__() == '<Resource | 1>'
-
-
-class MyTestResource(BaseResource):
-
-    class Meta:
-        name = 'Testy'
-        identifier = 'slug'
-        attributes = (
-            'name',
-            'slug',
-            'another_thing'
-        )
 
 
 def test_custom_resource():
@@ -41,11 +31,13 @@ def test_custom_resource():
         'slug': 'sluggy',
         'not_valid': 'nooo'
     }
-    instance = MyTestResource(**data)
+    instance = PeopleResource(**data)
     # We should have this attribute
     assert hasattr(instance, 'name')
     # But this one is missing
     assert not hasattr(instance, 'another_thing')
     # and this one is not valid
     assert not hasattr(instance, 'not_valid')
-    assert instance.__str__() == '<Testy | sluggy>'
+    assert instance.__str__() == '<People | Wort wort>'
+    # It should also have parent Meta attributes
+    assert hasattr(instance.Meta, 'acceptable_status_codes')

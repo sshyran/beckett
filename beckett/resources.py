@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from requests.status_codes import codes
+from .constants import DEFAULT_VALID_STATUS_CODES
 
 
 class BaseResource(object):
@@ -41,20 +41,10 @@ class BaseResource(object):
         attributes = (identifier,)
         # HTTP status codes that are considered "acceptable"
         # when calling this resource
-        acceptable_status_codes = (
-            codes.ok,  # 200
-            codes.created,  # 201
-            codes.no_content  # 204
-        )
+        acceptable_status_codes = DEFAULT_VALID_STATUS_CODES
 
     def __init__(self, *args, **kwargs):
-        """
-        Set the resource attributes from the kwargs.
-        Only sets items in the `self.Meta.attributes` white list
-        """
-        for field, value in kwargs.items():
-            if field in self.Meta.attributes:
-                setattr(self, field, value)
+        self.set_attributes(**kwargs)
 
     def __str__(self):
         """
@@ -63,3 +53,14 @@ class BaseResource(object):
         """
         return '<{} | {}>'.format(
             self.Meta.name, getattr(self, self.Meta.identifier))
+
+    def set_attributes(self, **kwargs):
+        """
+        Set the resource attributes from the kwargs.
+        Only sets items in the `self.Meta.attributes` white list.
+
+        Subclass this method to customise attributes.
+        """
+        for field, value in kwargs.items():
+            if field in self.Meta.attributes:
+                setattr(self, field, value)

@@ -3,14 +3,13 @@
 
 _Hypermedia API Client Framework_
 
-[![PyPi][pypi-image]][pypi-link]
-[![PyPi downloads][pypi-dl-image]][pypi-link]
-[![CircleCI][circle-image]][circle-link]
-[![Coverage Status][codecov-image]][codecov-link]
-
 ![quantumleap](media/leap.gif)
 
 Beckett is a convention-based framework for building Python interfaces around HTTP APIs.
+
+[![PyPi][pypi-image]][pypi-link]
+[![CircleCI][circle-image]][circle-link]
+[![Coverage Status][codecov-image]][codecov-link]
 
 📖 Features
 --------
@@ -42,3 +41,5 @@ Free software: [ISC license](https://github.com/phalt/beckett/blob/master/LICENS
 [circle-link]: https://circleci.com/gh/phalt/beckett/tree/master
 [codecov-image]: https://codecov.io/gh/phalt/beckett/branch/master/graph/badge.svg?token=T9mYPv0Ep2
 [codecov-link]: http://codecov.io/github/phalt/beckett?branch=master
+[github-start]: https://ghbtns.com/github-btn.html?user=phalt&repo=beckett&type=star&count=true
+[github-link]: https://github.com/phalt/beckett
