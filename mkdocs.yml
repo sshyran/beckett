@@ -3,5 +3,6 @@ theme: readthedocs
 
 pages:
     - Home: 'index.md'
-    - Introduction: 'intro.md'
+    - Getting Started: 'intro.md'
+    - Advanced Features: 'advanced.md'
     - Resources: 'resources.md'

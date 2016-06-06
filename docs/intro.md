@@ -1,29 +1,25 @@
-Introduction
-------------
+Getting Started
+---------------
 
-Beckett is a framework for developing **flexible API Clients for HTTP API services**.
+Beckett can be installed using [pip](https://pypi.python.org/pypi/pip/):
 
-Beckett provides the base tools for creating resources and specifying how they should look, how their API acts, and
-what attributes are valid. Beckett lets you provide **typed stateless instances** of your resources and control the changes
-that are made to them.
+```bash
+pip install beckett
+```
 
-Beckett also helps you quickly create a client that understands what response codes are valid, how to paginate resources
-and also what response formats to expect.
-
-Beckett works best with **hypermedia** response formats such as [HAL](http://stateless.co/hal_specification.html) and [JSONAPI](http://jsonapi.org), and will automagically transform hypermedia links into **methods** for communicating with related resources, as well as CRUD actions on the resources it gets.
+Once installed, use the [Resources][resources] and [Clients][clients] documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.
 
 Concepts
 --------
 
 Beckett has two key base models that you'll need to configure in order to get started: **Resources** and **Clients**.
 
-### Resources
-
-A **Resource** object represents a single resource in your API service:
+We'll using the following snippet of code to explain the basics concepts of Beckett:
 
 ```python
-# resources.py
-from beckett import resources
+# my_client.py
+from beckett import clients, resources
+
 
 class PokemonResource(resources.BaseResource):
     class Meta:
@@ -33,23 +29,7 @@ class PokemonResource(resources.BaseResource):
             'id',
             'name',
         )
-```
 
-Resources have a series of attributes in their `Meta` class. These define the attributes of a resource.
-
-In this instance, we are naming our resource with the `name` attribute. Defining unique `identifier`
-attribute to use when querying this resource, and setting a white list of `attributes` that we want to display on this resource.
-
-A full list of available attributes can be found on the [Resources](/resources) page.
-
-### Clients
-
-A typical Beckett-based API client only needs one **Client** instance. Here we define the base url of our API:
-
-```python
-# clients.py
-from beckett import clients
-from .resources import PokemonResource
 
 class PokemonClient(clients.BaseClient):
     class Meta:
@@ -58,6 +38,21 @@ class PokemonClient(clients.BaseClient):
             PokemonResource,
         )
 ```
+
+### Resources
+
+A **Resource** object represents a single resource in your API service:
+
+Resources have a series of attributes in their `Meta` class. These define the attributes and behaviour of a resource.
+
+In this instance, we are naming our resource with the `name` attribute. We're defining a unique `identifier`
+attribute to use when querying this resource, and setting a white list of `attributes` that we want to display on this resource.
+
+A full list of available attributes can be found on the [Resources][resources] page.
+
+### Clients
+
+A typical Beckett-based API client only needs one **Client** instance. However, many clients can be used for versioning.
 
 Clients can be configured using `Meta` class attributes, and inherits the defaults from the `BaseClient`.
 
@@ -70,8 +65,7 @@ A list of available attributes can be found on the [Clients](/clients) page.
 We can now start calling the API!
 
 ```python
-from clients import PokemonClient
-from resources import PokemonResource
+from my_client import PokemonClient
 
 my_client = PokemonClient()
 result = my_client.get_pokemon(1)
@@ -105,3 +99,9 @@ resource = 'pokemons'
 ```
 
 The `1` will be used by the `identifier` attribute on `PokemonResource` to help construct the URL when making HTTP calls.
+
+
+That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.
+
+[resources](/resources)
+[clients](/clients)

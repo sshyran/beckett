@@ -19,6 +19,7 @@ Beckett is a convention-based framework for building Python interfaces around HT
 --------
 
 * Define your Beckett client in Python instead of a data serialization language.
+* Encourages good HTTP and REST practices without being too strict.
 * Resources are transformed into typed instances - no more raw dictionaries!
 * Automatic URL routing for RESTful interaction to your resources.
 * SSL, rate limiting, timeout, and HTTP handling.
