@@ -8,7 +8,7 @@
   
   
   
-  <title>Introduction - Beckett</title>
+  <title>Getting Started - Beckett</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -23,7 +23,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_name = "Getting Started";
     var mkdocs_page_input_path = "intro.md";
     var mkdocs_page_url = "/intro/";
   </script>
@@ -63,11 +63,11 @@
           
             <li>
     <li class="toctree-l1 current">
-        <a class="current" href="./">Introduction</a>
+        <a class="current" href="./">Getting Started</a>
         
             <ul>
             
-                <li class="toctree-l3"><a href="#introduction">Introduction</a></li>
+                <li class="toctree-l3"><a href="#getting-started">Getting Started</a></li>
                 
             
                 <li class="toctree-l3"><a href="#concepts">Concepts</a></li>
@@ -80,6 +80,13 @@
                 
             
             </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../advanced/">Advanced Features</a>
         
     </li>
 <li>
@@ -113,7 +120,7 @@
     
       
     
-    <li>Introduction</li>
+    <li>Getting Started</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -123,20 +130,18 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="introduction">Introduction</h2>
-<p>Beckett is a framework for developing <strong>flexible API Clients for HTTP API services</strong>.</p>
-<p>Beckett provides the base tools for creating resources and specifying how they should look, how their API acts, and
-what attributes are valid. Beckett lets you provide <strong>typed stateless instances</strong> of your resources and control the changes
-that are made to them.</p>
-<p>Beckett also helps you quickly create a client that understands what response codes are valid, how to paginate resources
-and also what response formats to expect.</p>
-<p>Beckett works best with <strong>hypermedia</strong> response formats such as <a href="http://stateless.co/hal_specification.html">HAL</a> and <a href="http://jsonapi.org">JSONAPI</a>, and will automagically transform hypermedia links into <strong>methods</strong> for communicating with related resources, as well as CRUD actions on the resources it gets.</p>
+                <h2 id="getting-started">Getting Started</h2>
+<p>Beckett can be installed using <a href="https://pypi.python.org/pypi/pip/">pip</a>:</p>
+<pre><code class="bash">pip install beckett
+</code></pre>
+
+<p>Once installed, use the [Resources][resources] and [Clients][clients] documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.</p>
 <h2 id="concepts">Concepts</h2>
 <p>Beckett has two key base models that you'll need to configure in order to get started: <strong>Resources</strong> and <strong>Clients</strong>.</p>
-<h3 id="resources">Resources</h3>
-<p>A <strong>Resource</strong> object represents a single resource in your API service:</p>
-<pre><code class="python"># resources.py
-from beckett import resources
+<p>We'll using the following snippet of code to explain the basics concepts of Beckett:</p>
+<pre><code class="python"># my_client.py
+from beckett import clients, resources
+
 
 class PokemonResource(resources.BaseResource):
     class Meta:
@@ -146,17 +151,7 @@ class PokemonResource(resources.BaseResource):
             'id',
             'name',
         )
-</code></pre>
 
-<p>Resources have a series of attributes in their <code>Meta</code> class. These define the attributes of a resource.</p>
-<p>In this instance, we are naming our resource with the <code>name</code> attribute. Defining unique <code>identifier</code>
-attribute to use when querying this resource, and setting a white list of <code>attributes</code> that we want to display on this resource.</p>
-<p>A full list of available attributes can be found on the <a href="../resources">Resources</a> page.</p>
-<h3 id="clients">Clients</h3>
-<p>A typical Beckett-based API client only needs one <strong>Client</strong> instance. Here we define the base url of our API:</p>
-<pre><code class="python"># clients.py
-from beckett import clients
-from .resources import PokemonResource
 
 class PokemonClient(clients.BaseClient):
     class Meta:
@@ -166,13 +161,20 @@ class PokemonClient(clients.BaseClient):
         )
 </code></pre>
 
+<h3 id="resources">Resources</h3>
+<p>A <strong>Resource</strong> object represents a single resource in your API service:</p>
+<p>Resources have a series of attributes in their <code>Meta</code> class. These define the attributes and behaviour of a resource.</p>
+<p>In this instance, we are naming our resource with the <code>name</code> attribute. We're defining a unique <code>identifier</code>
+attribute to use when querying this resource, and setting a white list of <code>attributes</code> that we want to display on this resource.</p>
+<p>A full list of available attributes can be found on the [Resources][resources] page.</p>
+<h3 id="clients">Clients</h3>
+<p>A typical Beckett-based API client only needs one <strong>Client</strong> instance. However, many clients can be used for versioning.</p>
 <p>Clients can be configured using <code>Meta</code> class attributes, and inherits the defaults from the <code>BaseClient</code>.</p>
 <p>In this instance we're setting the <code>base_url</code> of the API, as well as a list of <code>resources</code> that this API supports.</p>
 <p>A list of available attributes can be found on the <a href="../clients">Clients</a> page.</p>
 <h3 id="example-usage">Example Usage</h3>
 <p>We can now start calling the API!</p>
-<pre><code class="python">from clients import PokemonClient
-from resources import PokemonResource
+<pre><code class="python">from my_client import PokemonClient
 
 my_client = PokemonClient()
 result = my_client.get_pokemon(1)
@@ -199,6 +201,9 @@ result.name
 </code></pre>
 
 <p>The <code>1</code> will be used by the <code>identifier</code> attribute on <code>PokemonResource</code> to help construct the URL when making HTTP calls.</p>
+<p>That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.</p>
+<p><a href="../resources">resources</a>
+<a href="../clients">clients</a></p>
               
             </div>
           </div>
@@ -206,7 +211,7 @@ result.name
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../resources/" class="btn btn-neutral float-right" title="Resources">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../advanced/" class="btn btn-neutral float-right" title="Advanced Features">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -238,7 +243,7 @@ result.name
         <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../resources/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../advanced/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

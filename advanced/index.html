@@ -8,7 +8,7 @@
   
   
   
-  <title>Resources - Beckett</title>
+  <title>Advanced Features - Beckett</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -23,9 +23,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Resources";
-    var mkdocs_page_input_path = "resources.md";
-    var mkdocs_page_url = "/resources/";
+    var mkdocs_page_name = "Advanced Features";
+    var mkdocs_page_input_path = "advanced.md";
+    var mkdocs_page_url = "/advanced/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -69,27 +69,28 @@
 <li>
           
             <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../advanced/">Advanced Features</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Advanced Features</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#advanced-features">Advanced Features</a></li>
+                
+                    <li><a class="toctree-l4" href="#updating-creating-resources">Updating / Creating resources</a></li>
+                
+                    <li><a class="toctree-l4" href="#versioning">Versioning</a></li>
+                
+                    <li><a class="toctree-l4" href="#response-formats">Response formats</a></li>
+                
+            
+            </ul>
         
     </li>
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Resources</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#introduction">Introduction</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#baseresource">BaseResource</a></li>
-                
-                    <li><a class="toctree-l4" href="#-attributes">- attributes</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../resources/">Resources</a>
         
     </li>
 <li>
@@ -116,7 +117,7 @@
     
       
     
-    <li>Resources</li>
+    <li>Advanced Features</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -126,39 +127,12 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="introduction">Introduction</h2>
-<p>Resources are models relating to individual resources in an HTTP API.</p>
-<h2 id="baseresource">BaseResource</h2>
-<p>A simple representation of a resource.</p>
-<p><strong>Example:</strong></p>
-<pre><code class="python"># myresources.py
-from beckett.resources import BaseResource
-
-class Product(BaseResource):
-
-    class Meta:
-        name = 'Product'
-        identifier = 'slug'
-        attributes = (
-            'slug',
-            'name',
-            'price',
-            'discount'
-        )
-
-</code></pre>
-
-<p><strong>Usage:</strong></p>
-<pre><code class="bash"># Note: Data will usually come straight from the client method
-&gt;&gt;&gt; data = {'name': 'Tasty product', 'slug': 'sluggy'}
-&gt;&gt;&gt; product = Product(**data)
-&lt;Product | sluggy&gt;
-&gt;&gt;&gt; product.name
-'Tasty product'
-</code></pre>
-
-<h3 id="-attributes">- attributes</h3>
-<p>TODO</p>
+                <h2 id="advanced-features">Advanced Features</h2>
+<h3 id="updating-creating-resources">Updating / Creating resources</h3>
+<p>todo</p>
+<h3 id="versioning">Versioning</h3>
+<p>todo</p>
+<h3 id="response-formats">Response formats</h3>
               
             </div>
           </div>
@@ -166,8 +140,10 @@ class Product(BaseResource):
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="../resources/" class="btn btn-neutral float-right" title="Resources">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-        <a href="../advanced/" class="btn btn-neutral" title="Advanced Features"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+        <a href="../intro/" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -193,8 +169,10 @@ class Product(BaseResource):
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../advanced/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../intro/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
+      
+        <span style="margin-left: 15px"><a href="../resources/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
