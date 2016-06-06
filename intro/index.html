@@ -135,7 +135,7 @@
 <pre><code class="bash">pip install beckett
 </code></pre>
 
-<p>Once installed, use the [Resources][resources] and [Clients][clients] documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.</p>
+<p>Once installed, use the <a href="../resources">Resources</a> and <a href="../clients">Clients</a> documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.</p>
 <h2 id="concepts">Concepts</h2>
 <p>Beckett has two key base models that you'll need to configure in order to get started: <strong>Resources</strong> and <strong>Clients</strong>.</p>
 <p>We'll using the following snippet of code to explain the basics concepts of Beckett:</p>
@@ -166,7 +166,7 @@ class PokemonClient(clients.BaseClient):
 <p>Resources have a series of attributes in their <code>Meta</code> class. These define the attributes and behaviour of a resource.</p>
 <p>In this instance, we are naming our resource with the <code>name</code> attribute. We're defining a unique <code>identifier</code>
 attribute to use when querying this resource, and setting a white list of <code>attributes</code> that we want to display on this resource.</p>
-<p>A full list of available attributes can be found on the [Resources][resources] page.</p>
+<p>A full list of available attributes can be found on the <a href="../resources">Resources</a> page.</p>
 <h3 id="clients">Clients</h3>
 <p>A typical Beckett-based API client only needs one <strong>Client</strong> instance. However, many clients can be used for versioning.</p>
 <p>Clients can be configured using <code>Meta</code> class attributes, and inherits the defaults from the <code>BaseClient</code>.</p>
@@ -201,9 +201,7 @@ result.name
 </code></pre>
 
 <p>The <code>1</code> will be used by the <code>identifier</code> attribute on <code>PokemonResource</code> to help construct the URL when making HTTP calls.</p>
-<p>That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.</p>
-<p><a href="../resources">resources</a>
-<a href="../clients">clients</a></p>
+<p>That's the basics! We recommend reading the <a href="../resources">resources</a> and <a href="../clients">clients</a> documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.</p>
               
             </div>
           </div>
