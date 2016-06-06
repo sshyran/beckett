@@ -2,6 +2,7 @@ dependencies:
   override:
     - pip install -r requirements_dev.txt
     - pip install tox-pyenv
+    - sudo pip install mkdocs
     - pyenv local 2.7.10 3.4.3 3.5.0
 
 test:
@@ -14,4 +15,5 @@ deployment:
   master:
     branch: master
     commands:
-      - mkdocs gh-deploy --remote-name origin --clean -v
+      - git remote add upstream git@github.com:phalt/beckett
+      - mkdocs gh-deploy --remote-name upstream --clean -v
