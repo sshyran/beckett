@@ -78,7 +78,8 @@ class BaseClient(object):
             full_url = '{}/{}'.format(full_url, str(id))
         headers = {
             'X-CLIENT': self.Meta.name,
-            'X-METHOD': method_name
+            'X-METHOD': method_name,
+            'content-type': 'application/json'
         }
         params = {
             'headers': headers,
