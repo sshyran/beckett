@@ -10,7 +10,7 @@ Tests for `beckett.clients` module.
 
 import responses
 
-from .fixtures import BlogTestClient, PlainTestClient
+from .fixtures import BlogResource, BlogTestClient, PlainTestClient
 
 
 def test_custom_client():
@@ -42,3 +42,7 @@ def test_custom_client_get_methods():
     result = client.get_blog(uid=1)
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'
+    assert isinstance(result, list)
+    assert isinstance(result[0], BlogResource)
+    resource = result[0]
+    assert resource.title == 'blog title'

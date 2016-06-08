@@ -90,7 +90,7 @@ class BaseClient(object):
             requests.Request(method=method_type, **params)
         )
         response = self.session.send(prepared_request)
-        return self._handle_response(response, valid_status_codes)
+        return self._handle_response(response, valid_status_codes, resource)
 
     def _assign_method(self, resource_class, method_type):
         """
@@ -157,10 +157,14 @@ class BaseClient(object):
             types.MethodType(method_map[method_type], self)
         )
 
-    def _handle_response(self, response, valid_status_codes):
+    def _handle_response(self, response, valid_status_codes, resource):
         """
         Handles Response objects
         """
         if response.status_code not in valid_status_codes:
                 raise InvalidStatusCodeError
-        return response.json()
+        data = response.json()
+        if isinstance(data, list):
+            return [resource(**x) for x in data]
+        else:
+            return [resource(**data)]

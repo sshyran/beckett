@@ -68,7 +68,8 @@ class BaseResource(object):
             if field in self.Meta.attributes:
                 setattr(self, field, value)
 
-    def get_resource_url(self, base_url):
+    @staticmethod
+    def get_resource_url(cls, base_url):
         """
         Construct the URL for talking to this resource.
 
@@ -85,7 +86,7 @@ class BaseResource(object):
         Subclass this method to customise your resource URL structure.
         """
         p = inflect.engine()
-        plural_name = p.plural(self.Meta.name.lower())
+        plural_name = p.plural(cls.Meta.name.lower())
         return '{}/{}'.format(base_url, plural_name)
 
     @staticmethod
