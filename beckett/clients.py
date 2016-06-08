@@ -2,8 +2,6 @@
 
 import types
 
-import inflect
-
 import requests
 
 from .exceptions import InvalidStatusCodeError
@@ -20,6 +18,14 @@ VALID_METHODS = (
     HTTP_PATCH,
     HTTP_PUT,
     HTTP_DELETE
+)
+
+# Methods that require a unique ID to access
+SINGLE_RESOURCE_METHODS = (
+    HTTP_GET,
+    HTTP_PUT,
+    HTTP_PATCH,
+    HTTP_DELETE,
 )
 
 
@@ -56,26 +62,19 @@ class BaseClient(object):
         assert all([
             x.upper() in VALID_METHODS for x in resource_class.Meta.methods])
         for method in resource_class.Meta.methods:
-            method_name = '{}_{}'.format(
-                method.lower(), resource_class.Meta.name)
-            p = inflect.engine()
-            plural_name = p.plural(resource_class.Meta.name.lower())
-            full_url = '{}/{}'.format(
-                self.Meta.base_url, plural_name)
+
             self._assign_method(
-                method.upper(),
-                method_name,
-                full_url,
-                resource_class.Meta.acceptable_status_codes
+                resource_class,
+                method.upper()
             )
 
     def call_api(self, method_type, method_name,
-                 full_url, valid_status_codes, data={}, id=None):
+                 full_url, valid_status_codes, resource, data={}, uid=None):
         """
         Does the actual HTTP API calls.
         """
-        if method_type in [HTTP_GET, HTTP_PUT, HTTP_PATCH, HTTP_DELETE] and id:
-            full_url = '{}/{}'.format(full_url, str(id))
+        if method_type in SINGLE_RESOURCE_METHODS and uid:
+            full_url = resource.get_single_resource_url(full_url, uid)
         headers = {
             'X-CLIENT': self.Meta.name,
             'X-METHOD': method_name,
@@ -93,8 +92,7 @@ class BaseClient(object):
         response = self.session.send(prepared_request)
         return self._handle_response(response, valid_status_codes)
 
-    def _assign_method(self, method_type, method_name,
-                       full_url, valid_status_codes):
+    def _assign_method(self, resource_class, method_type):
         """
         Using reflection, assigns a new method to this class.
         """
@@ -103,35 +101,48 @@ class BaseClient(object):
         If we assigned the same method to each method, it's the same
         method in memory, so we need one for each acceptable HTTP method.
         """
+
+        method_name = '{}_{}'.format(
+            method_type.lower(), resource_class.Meta.name.lower())
+        url = resource_class.get_resource_url(
+            resource_class, base_url=self.Meta.base_url
+        )
+
+        valid_status_codes = resource_class.Meta.acceptable_status_codes
+
         def get(self, method_type=method_type, method_name=method_name,
-                full_url=full_url, valid_status_codes=valid_status_codes,
-                data=None, id=None):
+                url=url, valid_status_codes=valid_status_codes,
+                resource=resource_class, data=None, uid=None):
             return self.call_api(method_type, method_name,
-                                 full_url, valid_status_codes, data, id=id)
+                                 url, valid_status_codes,
+                                 resource, data, uid=uid)
 
         def put(self, method_type=method_type, method_name=method_name,
-                full_url=full_url, valid_status_codes=valid_status_codes,
-                data={}, id=None):
+                url=url, valid_status_codes=valid_status_codes,
+                resource=resource_class, data={}, uid=None):
             return self.call_api(method_type, method_name,
-                                 full_url, valid_status_codes, data, id=id)
+                                 url, valid_status_codes,
+                                 resource, data, uid=uid)
 
         def post(self, method_type=method_type, method_name=method_name,
-                 full_url=full_url, valid_status_codes=valid_status_codes,
-                 data={}):
+                 url=url, valid_status_codes=valid_status_codes,
+                 resource=resource_class, data={}):
             return self.call_api(method_type, method_name,
-                                 full_url, valid_status_codes, data)
+                                 url, valid_status_codes, resource, data)
 
         def patch(self, method_type=method_type, method_name=method_name,
-                  full_url=full_url, valid_status_codes=valid_status_codes,
-                  data={}, id=None):
+                  url=url, valid_status_codes=valid_status_codes,
+                  resource=resource_class, data={}, uid=None):
             return self.call_api(method_type, method_name,
-                                 full_url, valid_status_codes, data, id=id)
+                                 url, valid_status_codes,
+                                 resource, data, uid=uid)
 
         def delete(self, method_type=method_type, method_name=method_name,
-                   full_url=full_url, valid_status_codes=valid_status_codes,
-                   data=None, id=id):
+                   url=url, valid_status_codes=valid_status_codes,
+                   resource=resource_class, data=None, uid=None):
             return self.call_api(method_type, method_name,
-                                 full_url, valid_status_codes, data, id=id)
+                                 url, valid_status_codes,
+                                 resource, data, uid=uid)
 
         method_map = {
             'GET': get,
@@ -142,7 +153,7 @@ class BaseClient(object):
         }
 
         setattr(
-            self, method_name.lower(),
+            self, method_name,
             types.MethodType(method_map[method_type], self)
         )
 

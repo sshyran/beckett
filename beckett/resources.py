@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import inflect
+
 from .constants import DEFAULT_VALID_STATUS_CODES
+from .exceptions import MissingUidException
 
 
 class BaseResource(object):
@@ -64,3 +67,35 @@ class BaseResource(object):
         for field, value in kwargs.items():
             if field in self.Meta.attributes:
                 setattr(self, field, value)
+
+    def get_resource_url(self, base_url):
+        """
+        Construct the URL for talking to this resource.
+
+        i.e.:
+
+        http://myapi.com/api/resource
+
+        Note that this is NOT the method for calling individual instances i.e.
+
+        http://myapi.com/api/resource/1
+
+        Subclass the `get_single_resource_url` method to modify that.
+
+        Subclass this method to customise your resource URL structure.
+        """
+        p = inflect.engine()
+        plural_name = p.plural(self.Meta.name.lower())
+        return '{}/{}'.format(base_url, plural_name)
+
+    @staticmethod
+    def get_single_resource_url(resource_url, uid):
+        """
+        Construct the URL for talking to an individual resource.
+
+        http://myapi.com/api/resource/1
+        """
+
+        if uid is None:
+            raise MissingUidException
+        return '{}/{}'.format(resource_url, uid)
