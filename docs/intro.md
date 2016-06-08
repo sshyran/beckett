@@ -22,17 +22,20 @@ from beckett import clients, resources
 
 
 class PokemonResource(resources.BaseResource):
-    class Meta:
+    class Meta(resources.BaseResource.Meta):
         name = 'Pokemon'
         identifier = 'id'
         attributes = (
             'id',
             'name',
         )
+        methods = (
+            'get',
+        )
 
 
 class PokemonClient(clients.BaseClient):
-    class Meta:
+    class Meta(clients.BaseClient.Meta):
         base_url = 'https://pokeapi.co/api/v1/'
         resources = (
             PokemonResource,
@@ -68,7 +71,7 @@ We can now start calling the API!
 from my_client import PokemonClient
 
 my_client = PokemonClient()
-result = my_client.get_pokemon(1)
+result = my_client.get_pokemon(1)[0]
 
 isinstance(result, PokemonResource)
 >>> True
