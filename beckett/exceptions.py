@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
+class BadURLException(Exception):
+    """ An Invalid URL was parsed """
+
+
 class InvalidStatusCodeError(Exception):
     """ An Invalid status code was returned for this resource """
 

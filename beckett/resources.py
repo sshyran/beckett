@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+if sys.version_info[0] == 3:
+    # Py3
+    from urllib.parse import urlparse
+else:
+    # Py2
+    from urlparse import urlparse
+
 import inflect
 
 from .constants import DEFAULT_VALID_STATUS_CODES
-from .exceptions import MissingUidException
+from .exceptions import BadURLException, MissingUidException
 
 
 class BaseResource(object):
@@ -38,6 +47,8 @@ class BaseResource(object):
     class Meta:
         # The name of this resource, used in __str__ methods.
         name = 'Resource'
+        # The name of the resource used in the URL, i.e. 'resources'
+        resource_name = None
         # The key with which you uniquely identify this resource.
         identifier = 'id'
         # Acceptable attributes that you want to display in this resource.
@@ -69,7 +80,7 @@ class BaseResource(object):
                 setattr(self, field, value)
 
     @staticmethod
-    def get_resource_url(cls, base_url):
+    def get_resource_url(resource, base_url):
         """
         Construct the URL for talking to this resource.
 
@@ -85,12 +96,20 @@ class BaseResource(object):
 
         Subclass this method to customise your resource URL structure.
         """
-        p = inflect.engine()
-        plural_name = p.plural(cls.Meta.name.lower())
-        return '{}/{}'.format(base_url, plural_name)
+        if resource.Meta.resource_name:
+            url = '{}/{}'.format(base_url, resource.Meta.resource_name)
+        else:
+            p = inflect.engine()
+            plural_name = p.plural(resource.Meta.name.lower())
+            url = '{}/{}'.format(base_url, plural_name)
+        parsed_url = urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc:
+            return parsed_url.geturl()
+        else:
+            raise BadURLException
 
     @staticmethod
-    def get_single_resource_url(resource_url, uid):
+    def get_single_resource_url(resource_url, uid, **kwargs):
         """
         Construct the URL for talking to an individual resource.
 
@@ -99,4 +118,9 @@ class BaseResource(object):
 
         if uid is None:
             raise MissingUidException
-        return '{}/{}'.format(resource_url, uid)
+        url = '{}/{}'.format(resource_url, uid)
+        parsed_url = urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc:
+            return parsed_url.geturl()
+        else:
+            raise BadURLException

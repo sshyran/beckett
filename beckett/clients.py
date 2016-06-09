@@ -68,13 +68,22 @@ class BaseClient(object):
                 method.upper()
             )
 
-    def call_api(self, method_type, method_name,
-                 full_url, valid_status_codes, resource, data={}, uid=None):
+    def call_api(self, method_type, method_name, url,
+                 valid_status_codes, resource, data,
+                 uid, **kwargs):
         """
-        Does the actual HTTP API calls.
+        Make HTTP calls.
+
+        kwargs is a list of keyword arguments. Additional custom keyword
+        arguments can be sent into this method and will be passed into
+        subclass methods:
+
+        - get_single_resource_url
         """
+
         if method_type in SINGLE_RESOURCE_METHODS and uid:
-            full_url = resource.get_single_resource_url(full_url, uid)
+            full_url = resource.get_single_resource_url(
+                url, uid, **kwargs)
         headers = {
             'X-CLIENT': self.Meta.name,
             'X-METHOD': method_name,
@@ -110,39 +119,46 @@ class BaseClient(object):
 
         valid_status_codes = resource_class.Meta.acceptable_status_codes
 
+        # I know what you're going to say, and I'd love help making this nicer
         def get(self, method_type=method_type, method_name=method_name,
                 url=url, valid_status_codes=valid_status_codes,
-                resource=resource_class, data=None, uid=None):
-            return self.call_api(method_type, method_name,
-                                 url, valid_status_codes,
-                                 resource, data, uid=uid)
+                resource=resource_class, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
 
         def put(self, method_type=method_type, method_name=method_name,
                 url=url, valid_status_codes=valid_status_codes,
-                resource=resource_class, data={}, uid=None):
-            return self.call_api(method_type, method_name,
-                                 url, valid_status_codes,
-                                 resource, data, uid=uid)
+                resource=resource_class, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
 
         def post(self, method_type=method_type, method_name=method_name,
                  url=url, valid_status_codes=valid_status_codes,
-                 resource=resource_class, data={}):
-            return self.call_api(method_type, method_name,
-                                 url, valid_status_codes, resource, data)
+                 resource=resource_class, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
 
         def patch(self, method_type=method_type, method_name=method_name,
                   url=url, valid_status_codes=valid_status_codes,
-                  resource=resource_class, data={}, uid=None):
-            return self.call_api(method_type, method_name,
-                                 url, valid_status_codes,
-                                 resource, data, uid=uid)
+                  resource=resource_class, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
 
         def delete(self, method_type=method_type, method_name=method_name,
                    url=url, valid_status_codes=valid_status_codes,
-                   resource=resource_class, data=None, uid=None):
-            return self.call_api(method_type, method_name,
-                                 url, valid_status_codes,
-                                 resource, data, uid=uid)
+                   resource=resource_class, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
 
         method_map = {
             'GET': get,
@@ -162,7 +178,7 @@ class BaseClient(object):
         Handles Response objects
         """
         if response.status_code not in valid_status_codes:
-                raise InvalidStatusCodeError
+            raise InvalidStatusCodeError
         data = response.json()
         if isinstance(data, list):
             return [resource(**x) for x in data]
