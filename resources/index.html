@@ -81,12 +81,9 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#introduction">Introduction</a></li>
+                <li class="toctree-l3"><a href="#class-baseresource">class BaseResource</a></li>
                 
-            
-                <li class="toctree-l3"><a href="#baseresource">BaseResource</a></li>
-                
-                    <li><a class="toctree-l4" href="#-attributes">- attributes</a></li>
+                    <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
                 
             
             </ul>
@@ -126,9 +123,8 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="introduction">Introduction</h2>
-<p>Resources are models relating to individual resources in an HTTP API.</p>
-<h2 id="baseresource">BaseResource</h2>
+                <p>Resources are models relating to individual resources in an HTTP API.</p>
+<h2 id="class-baseresource">class BaseResource</h2>
 <p>A simple representation of a resource.</p>
 <p><strong>Example:</strong></p>
 <pre><code class="python"># myresources.py
@@ -157,8 +153,55 @@ class Product(BaseResource):
 'Tasty product'
 </code></pre>
 
-<h3 id="-attributes">- attributes</h3>
-<p>TODO</p>
+<h3 id="-meta-attributes">- Meta Attributes</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Attribute</th>
+<th align="left">Required</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>name</code></td>
+<td align="left">Yes</td>
+<td align="left">String</td>
+<td align="left">The name of this resource instance. Usually a singular noun.</td>
+</tr>
+<tr>
+<td align="left"><code>resource_name</code></td>
+<td align="left">No</td>
+<td align="left">String</td>
+<td align="left">The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the <code>name</code> attribute.</td>
+</tr>
+<tr>
+<td align="left"><code>identifier</code></td>
+<td align="left">Yes</td>
+<td align="left">Int/String</td>
+<td align="left">The key attribute that can be used to identify this attribute. Used when referring to related resources.</td>
+</tr>
+<tr>
+<td align="left"><code>attributes</code></td>
+<td align="left">Yes</td>
+<td align="left">Tuple of Strings</td>
+<td align="left">A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.</td>
+</tr>
+<tr>
+<td align="left"><code>acceptable_status_codes</code></td>
+<td align="left">No</td>
+<td align="left">Tuple of Ints</td>
+<td align="left">A tuple list of integers, referring to the HTTP status codes that are considered "acceptable" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.</td>
+</tr>
+<tr>
+<td align="left"><code>methods</code></td>
+<td align="left">No</td>
+<td align="left">Tuple of Strings</td>
+<td align="left">A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div>
