@@ -10,18 +10,24 @@ Beckett is a convention-based framework for building Python interfaces around HT
 [![PyPi][pypi-image]][pypi-link]
 [![CircleCI][circle-image]][circle-link]
 [![Coverage Status][codecov-image]][codecov-link]
+[![Landscape Status][landscape-image]][landscape-link]
+
 
 📖 Features
 --------
 
-* Define your Beckett client in Python instead of a data serialization language.
-* Encourages good HTTP and REST practices without being too strict.
-* Resources are transformed into typed instances - no more raw dictionaries!
-* Automatic URL routing for RESTful interaction to your resources.
-* SSL, rate limiting, timeout, and HTTP handling.
-* Hypermedia relationship links are automagically resolved into python methods.
-* Supports hypermedia response formats such as JSONAPI and HAL.
-* Works out of the box, but each resource is completely configurable.
+- Define your API client in Python instead of a data serialization language.
+- Encourages good HTTP and REST practices without being too strict.
+- Resources are transformed into typed instances - no more raw dictionaries!
+- Automatic URL routing for RESTful interaction to your resources.
+- Hypermedia relationship links are automagically resolved into python methods.
+- Supports hypermedia response formats such as JSONAPI and HAL.
+- Works out of the box, but each resource is completely configurable.
+
+🏗 Status
+----------
+
+Beckett is currently under **major development** and is not ready for use.
 
 
 🎥 Credits
@@ -41,5 +47,5 @@ Free software: [ISC license](https://github.com/phalt/beckett/blob/master/LICENS
 [circle-link]: https://circleci.com/gh/phalt/beckett/tree/master
 [codecov-image]: https://codecov.io/gh/phalt/beckett/branch/master/graph/badge.svg?token=T9mYPv0Ep2
 [codecov-link]: http://codecov.io/github/phalt/beckett?branch=master
-[github-start]: https://ghbtns.com/github-btn.html?user=phalt&repo=beckett&type=star&count=true
-[github-link]: https://github.com/phalt/beckett
+[landscape-image]: https://landscape.io/github/phalt/beckett/master/landscape.svg?style=flat&badge_auth_token=0cce4803ec014cf4ad889498bba7e7e7
+[landscape-link]: https://landscape.io/github/phalt/beckett/master
