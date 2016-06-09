@@ -56,6 +56,10 @@ class BaseResource(object):
         # HTTP status codes that are considered "acceptable"
         # when calling this resource
         acceptable_status_codes = DEFAULT_VALID_STATUS_CODES
+        # HTTP Methods that work on this resource
+        methods = (
+            'get',
+        )
 
     def __init__(self, *args, **kwargs):
         self.set_attributes(**kwargs)
