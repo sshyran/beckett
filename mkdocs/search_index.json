@@ -56,6 +56,21 @@
             "title": "Example Usage"
         },
         {
+            "location": "/resources/",
+            "text": "Resources are models relating to individual resources in an HTTP API.\n\n\nclass BaseResource\n\n\nA simple representation of a resource.\n\n\nExample:\n\n\n# myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )\n\n\n\n\n\nUsage:\n\n\n# Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'\n\n\n\n\n- Meta Attributes\n\n\n\n\n\n\n\n\nAttribute\n\n\nRequired\n\n\nType\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nname\n\n\nYes\n\n\nString\n\n\nThe name of this resource instance. Usually a singular noun.\n\n\n\n\n\n\nresource_name\n\n\nNo\n\n\nString\n\n\nThe name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the \nname\n attribute.\n\n\n\n\n\n\nidentifier\n\n\nYes\n\n\nInt/String\n\n\nThe key attribute that can be used to identify this attribute. Used when referring to related resources.\n\n\n\n\n\n\nattributes\n\n\nYes\n\n\nTuple of Strings\n\n\nA tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.\n\n\n\n\n\n\nacceptable_status_codes\n\n\nNo\n\n\nTuple of Ints\n\n\nA tuple list of integers, referring to the HTTP status codes that are considered \"acceptable\" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.\n\n\n\n\n\n\nmethods\n\n\nNo\n\n\nTuple of Strings\n\n\nA tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.",
+            "title": "Resources"
+        },
+        {
+            "location": "/resources/#class-baseresource",
+            "text": "A simple representation of a resource.  Example:  # myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )  Usage:  # Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'",
+            "title": "class BaseResource"
+        },
+        {
+            "location": "/resources/#-meta-attributes",
+            "text": "Attribute  Required  Type  Description      name  Yes  String  The name of this resource instance. Usually a singular noun.    resource_name  No  String  The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the  name  attribute.    identifier  Yes  Int/String  The key attribute that can be used to identify this attribute. Used when referring to related resources.    attributes  Yes  Tuple of Strings  A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.    acceptable_status_codes  No  Tuple of Ints  A tuple list of integers, referring to the HTTP status codes that are considered \"acceptable\" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.    methods  No  Tuple of Strings  A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.",
+            "title": "- Meta Attributes"
+        },
+        {
             "location": "/advanced/",
             "text": "Advanced Features\n\n\nUpdating / Creating resources\n\n\ntodo\n\n\nVersioning\n\n\ntodo\n\n\nResponse formats",
             "title": "Advanced Features"
@@ -79,21 +94,6 @@
             "location": "/advanced/#response-formats",
             "text": "",
             "title": "Response formats"
-        },
-        {
-            "location": "/resources/",
-            "text": "Resources are models relating to individual resources in an HTTP API.\n\n\nclass BaseResource\n\n\nA simple representation of a resource.\n\n\nExample:\n\n\n# myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )\n\n\n\n\n\nUsage:\n\n\n# Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'\n\n\n\n\n- Meta Attributes\n\n\n\n\n\n\n\n\nAttribute\n\n\nRequired\n\n\nType\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nname\n\n\nYes\n\n\nString\n\n\nThe name of this resource instance. Usually a singular noun.\n\n\n\n\n\n\nresource_name\n\n\nNo\n\n\nString\n\n\nThe name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the \nname\n attribute.\n\n\n\n\n\n\nidentifier\n\n\nYes\n\n\nInt/String\n\n\nThe key attribute that can be used to identify this attribute. Used when referring to related resources.\n\n\n\n\n\n\nattributes\n\n\nYes\n\n\nTuple of Strings\n\n\nA tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.\n\n\n\n\n\n\nacceptable_status_codes\n\n\nNo\n\n\nTuple of Ints\n\n\nA tuple list of integers, referring to the HTTP status codes that are considered \"acceptable\" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.\n\n\n\n\n\n\nmethods\n\n\nNo\n\n\nTuple of Strings\n\n\nA tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.",
-            "title": "Resources"
-        },
-        {
-            "location": "/resources/#class-baseresource",
-            "text": "A simple representation of a resource.  Example:  # myresources.py\nfrom beckett.resources import BaseResource\n\nclass Product(BaseResource):\n\n    class Meta:\n        name = 'Product'\n        identifier = 'slug'\n        attributes = (\n            'slug',\n            'name',\n            'price',\n            'discount'\n        )  Usage:  # Note: Data will usually come straight from the client method\n>>> data = {'name': 'Tasty product', 'slug': 'sluggy'}\n>>> product = Product(**data)\n<Product | sluggy>\n>>> product.name\n'Tasty product'",
-            "title": "class BaseResource"
-        },
-        {
-            "location": "/resources/#-meta-attributes",
-            "text": "Attribute  Required  Type  Description      name  Yes  String  The name of this resource instance. Usually a singular noun.    resource_name  No  String  The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the  name  attribute.    identifier  Yes  Int/String  The key attribute that can be used to identify this attribute. Used when referring to related resources.    attributes  Yes  Tuple of Strings  A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.    acceptable_status_codes  No  Tuple of Ints  A tuple list of integers, referring to the HTTP status codes that are considered \"acceptable\" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.    methods  No  Tuple of Strings  A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.",
-            "title": "- Meta Attributes"
         }
     ]
 }
