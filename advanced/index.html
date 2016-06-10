@@ -88,13 +88,10 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#advanced-features">Advanced Features</a></li>
+                <li class="toctree-l3"><a href="#customing-resource-urls">Customing Resource URLs</a></li>
                 
-                    <li><a class="toctree-l4" href="#updating-creating-resources">Updating / Creating resources</a></li>
-                
-                    <li><a class="toctree-l4" href="#versioning">Versioning</a></li>
-                
-                    <li><a class="toctree-l4" href="#response-formats">Response formats</a></li>
+            
+                <li class="toctree-l3"><a href="#response-formats">Response formats</a></li>
                 
             
             </ul>
@@ -134,12 +131,49 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="advanced-features">Advanced Features</h2>
-<h3 id="updating-creating-resources">Updating / Creating resources</h3>
-<p>todo</p>
-<h3 id="versioning">Versioning</h3>
-<p>todo</p>
+                <h3 id="customing-resource-urls">Customing Resource URLs</h3>
+<p>If you have domain-specific URLs you can modify them individually per Resource.</p>
+<p>If we have a resource that requires a URL structure like so:</p>
+<pre><code>https://myapi.com/api/v1/product?id=123&amp;country=GB
+</code></pre>
+
+<p>Which would require:</p>
+<ul>
+<li>The URL to accept an <code>id</code> query parameter</li>
+<li>An additional <code>country</code> parameter</li>
+</ul>
+<p>Then we can customise our <code>ProductResource</code> like so:</p>
+<pre><code class="python">class Product(BaseResource):
+
+    class Meta(BaseResource.Meta):
+        name = 'Product'
+        identifier = 'slug'
+        attributes = (
+            'slug',
+        )
+        methods = (
+            'get',
+        )
+
+    @staticmethod
+    def get_single_resource_url(url, uid, **kwargs):
+        &quot;&quot;&quot;
+        Our customised URL.
+        &quot;&quot;&quot;
+        return '{}/products/?id={}&amp;country={}'.format(
+            url,
+            uid,
+            kwargs.get('country')
+        )
+</code></pre>
+
+<p>When we go to use the resource in our client we simply call the <code>get_method</code> with additional parameters:</p>
+<pre><code class="python">client.get_product(uid=1, country='GB')
+&gt;&gt;&gt; &lt;Product | 1&gt;
+</code></pre>
+
 <h3 id="response-formats">Response formats</h3>
+<p>TODO</p>
               
             </div>
           </div>

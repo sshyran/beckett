@@ -85,6 +85,8 @@
                 
                     <li><a class="toctree-l4" href="#generated-methods">Generated Methods</a></li>
                 
+                    <li><a class="toctree-l4" href="#method-arguments">Method arguments</a></li>
+                
                     <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
                 
             
@@ -167,7 +169,7 @@ class MyClient(BaseClient):
 <tr>
 <th align="left">Method</th>
 <th align="left">HTTP method</th>
-<th align="left">Arguments</th>
+<th align="left">Arguments*</th>
 <th align="left">Example</th>
 </tr>
 </thead>
@@ -204,7 +206,12 @@ class MyClient(BaseClient):
 </tr>
 </tbody>
 </table>
-<h4 id="method-arguments">Method arguments</h4>
+<p>* Custom keyword arguments can be passed and will appear in the following methods:</p>
+<pre><code>BaseResource.get_single_resource_url
+</code></pre>
+
+<p>This allows some flexibility when customising these methods.</p>
+<h3 id="method-arguments">Method arguments</h3>
 <table>
 <thead>
 <tr>
