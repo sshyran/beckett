@@ -15,5 +15,4 @@ deployment:
   master:
     branch: master
     commands:
-      - git remote add upstream git@github.com:phalt/beckett
       - mkdocs gh-deploy --remote-name upstream --clean -v
