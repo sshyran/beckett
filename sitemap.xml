@@ -27,6 +27,14 @@
 
     
     <url>
+     <loc>None/clients/</loc>
+     <lastmod>2016-06-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
      <loc>None/advanced/</loc>
      <lastmod>2016-06-10</lastmod>
      <changefreq>daily</changefreq>

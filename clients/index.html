@@ -8,7 +8,7 @@
   
   
   
-  <title>Resources - Beckett</title>
+  <title>Clients - Beckett</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -23,9 +23,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Resources";
-    var mkdocs_page_input_path = "resources.md";
-    var mkdocs_page_url = "/resources/";
+    var mkdocs_page_name = "Clients";
+    var mkdocs_page_input_path = "clients.md";
+    var mkdocs_page_url = "/clients/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -69,24 +69,26 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Resources</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#class-baseresource">class BaseResource</a></li>
-                
-                    <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../resources/">Resources</a>
         
     </li>
 <li>
           
             <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../clients/">Clients</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Clients</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#class-baseclients">class BaseClients</a></li>
+                
+                    <li><a class="toctree-l4" href="#generated-methods">Generated Methods</a></li>
+                
+                    <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
+                
+            
+            </ul>
         
     </li>
 <li>
@@ -120,7 +122,7 @@
     
       
     
-    <li>Resources</li>
+    <li>Clients</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -130,36 +132,100 @@
           <div role="main">
             <div class="section">
               
-                <p>Resources are models relating to individual resources in an HTTP API.</p>
-<h2 id="class-baseresource">class BaseResource</h2>
-<p>A simple representation of a resource.</p>
+                <p>Clients are models that wrap the interaction with an API service.</p>
+<h2 id="class-baseclients">class BaseClients</h2>
+<p>A simple HTTP API client.</p>
 <p><strong>Example:</strong></p>
-<pre><code class="python"># myresources.py
-from beckett.resources import BaseResource
+<pre><code class="python"># clients.py
+from beckett.clients import BaseClient
+from .resources import ProductResource
 
-class Product(BaseResource):
+class MyClient(BaseClient):
 
-    class Meta(BaseResource.Meta):
-        name = 'Product'
-        identifier = 'slug'
-        attributes = (
-            'slug',
-            'name',
-            'price',
-            'discount'
+    class Meta(BaseClient.Meta):
+        base_url = 'http://myapi.com/api'
+        resources = (
+            ProductResource,
         )
 
 </code></pre>
 
 <p><strong>Usage:</strong></p>
 <pre><code class="bash"># Note: Data will usually come straight from the client method
-&gt;&gt;&gt; data = {'name': 'Tasty product', 'slug': 'sluggy'}
-&gt;&gt;&gt; product = Product(**data)
-&lt;Product | sluggy&gt;
+&gt;&gt;&gt; client = MyClient()
+# get_, post_, put_, delete_, patch_ methods are auto generated for resources
+&gt;&gt;&gt; product = client.get_product(uid='product_slug')
 &gt;&gt;&gt; product.name
 'Tasty product'
 </code></pre>
 
+<h3 id="generated-methods">Generated Methods</h3>
+<p>A number of methods are generated on the client when resources are registered.</p>
+<p>Based on the <code>methods</code> in a <a href="../resources">Resource</a>, the following methods are created:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Method</th>
+<th align="left">HTTP method</th>
+<th align="left">Arguments</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>get</code></td>
+<td align="left">GET</td>
+<td align="left">uid</td>
+<td align="left">get_product</td>
+</tr>
+<tr>
+<td align="left"><code>post</code></td>
+<td align="left">POST</td>
+<td align="left">data</td>
+<td align="left">post_product</td>
+</tr>
+<tr>
+<td align="left"><code>put</code></td>
+<td align="left">PUT</td>
+<td align="left">uid, data</td>
+<td align="left">put_product</td>
+</tr>
+<tr>
+<td align="left"><code>patch</code></td>
+<td align="left">PATCH</td>
+<td align="left">uid, data</td>
+<td align="left">patch_product</td>
+</tr>
+<tr>
+<td align="left"><code>delete</code></td>
+<td align="left">DELETE</td>
+<td align="left">uid</td>
+<td align="left">delete_product</td>
+</tr>
+</tbody>
+</table>
+<h4 id="method-arguments">Method arguments</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Argument</th>
+<th align="left">Type</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>uid</code></td>
+<td align="left">string or int</td>
+<td align="left"><code>1</code> or <code>'some_slug'</code></td>
+</tr>
+<tr>
+<td align="left"><code>data</code></td>
+<td align="left">dictionary</td>
+<td align="left">{'name': 'product', 'slug': 'some_slug'}</td>
+</tr>
+</tbody>
+</table>
 <h3 id="-meta-attributes">- Meta Attributes</h3>
 <table>
 <thead>
@@ -172,40 +238,16 @@ class Product(BaseResource):
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>name</code></td>
+<td align="left"><code>base_url</code></td>
 <td align="left">Yes</td>
 <td align="left">String</td>
-<td align="left">The name of this resource instance. Usually a singular noun.</td>
+<td align="left">The Base URL for the HTTP API Service.</td>
 </tr>
 <tr>
-<td align="left"><code>resource_name</code></td>
-<td align="left">No</td>
-<td align="left">String</td>
-<td align="left">The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the <code>name</code> attribute.</td>
-</tr>
-<tr>
-<td align="left"><code>identifier</code></td>
+<td align="left"><code>resources</code></td>
 <td align="left">Yes</td>
-<td align="left">Int/String</td>
-<td align="left">The key attribute that can be used to identify this attribute. Used when referring to related resources.</td>
-</tr>
-<tr>
-<td align="left"><code>attributes</code></td>
-<td align="left">Yes</td>
-<td align="left">Tuple of Strings</td>
-<td align="left">A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.</td>
-</tr>
-<tr>
-<td align="left"><code>acceptable_status_codes</code></td>
-<td align="left">No</td>
-<td align="left">Tuple of Ints</td>
-<td align="left">A tuple list of integers, referring to the HTTP status codes that are considered "acceptable" when communicating with this resource. If a status code is received that does not match this set, an error will be raised.</td>
-</tr>
-<tr>
-<td align="left"><code>methods</code></td>
-<td align="left">No</td>
-<td align="left">Tuple of Strings</td>
-<td align="left">A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.</td>
+<td align="left">Tuple of Resource objects</td>
+<td align="left">A tuple of <a href="../resource">Resource</a> classes that you want to register with this client</td>
 </tr>
 </tbody>
 </table>
@@ -216,10 +258,10 @@ class Product(BaseResource):
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../clients/" class="btn btn-neutral float-right" title="Clients">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../advanced/" class="btn btn-neutral float-right" title="Advanced Features">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../intro/" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../resources/" class="btn btn-neutral" title="Resources"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -245,10 +287,10 @@ class Product(BaseResource):
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../intro/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../resources/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../clients/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../advanced/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
