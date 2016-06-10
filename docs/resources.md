@@ -20,6 +20,9 @@ class Product(BaseResource):
             'price',
             'discount'
         )
+        methods = (
+            'get',
+        )
 
 ```
 **Usage:**
