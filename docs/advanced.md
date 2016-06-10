@@ -1,4 +1,4 @@
-### Customing Resource URLs
+## Customising Resource URLs
 
 If you have domain-specific URLs you can modify them individually per Resource.
 
@@ -47,6 +47,6 @@ client.get_product(uid=1, country='GB')
 >>> <Product | 1>
 ```
 
-### Response formats
+## Response formats
 
 TODO
