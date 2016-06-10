@@ -21,13 +21,13 @@ Beckett is a convention-based framework for building Python interfaces around HT
 - Resources are transformed into typed instances - no more raw dictionaries!
 - Automatic URL routing for RESTful interaction to your resources.
 - Hypermedia relationship links are automagically resolved into python methods.
-- Supports hypermedia response formats such as JSONAPI and HAL.
-- Works out of the box, but each resource is completely configurable.
+- Supports hypermedia response formats such as JSONAPI and HAL. [IN DEV]
+- Works out of the box, but each resource is completely configurable. [IN DEV]
 
 🏗 Status
 ----------
 
-Beckett is currently under **major development** and is not ready for use.
+Beckett is currently under **major development** and usage in critical projects is not recommended.
 
 
 🎥 Credits

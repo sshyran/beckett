@@ -5,4 +5,5 @@ pages:
     - Home: 'index.md'
     - Getting Started: 'intro.md'
     - Resources: 'resources.md'
+    - Clients: 'clients.md'
     - Advanced Features: 'advanced.md'

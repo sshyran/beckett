@@ -11,7 +11,7 @@ from beckett.resources import BaseResource
 
 class Product(BaseResource):
 
-    class Meta:
+    class Meta(BaseResource.Meta):
         name = 'Product'
         identifier = 'slug'
         attributes = (

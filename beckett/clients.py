@@ -32,8 +32,6 @@ SINGLE_RESOURCE_METHODS = (
 class BaseClient(object):
 
     class Meta:
-        # The name of this client.
-        name = NotImplemented
         # The base_url for the API of this client.
         base_url = NotImplemented
         # A list of registered resources.
