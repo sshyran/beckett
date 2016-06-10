@@ -82,7 +82,7 @@ class BaseClient(object):
         """
 
         if method_type in SINGLE_RESOURCE_METHODS and uid:
-            full_url = resource.get_single_resource_url(
+            url = resource.get_single_resource_url(
                 url, uid, **kwargs)
         headers = {
             'X-CLIENT': self.Meta.name,
@@ -91,7 +91,7 @@ class BaseClient(object):
         }
         params = {
             'headers': headers,
-            'url': full_url
+            'url': url
         }
         if method_type in ['POST', 'PUT', 'PATCH'] and isinstance(data, dict):
             params.update(json=data)
@@ -120,6 +120,7 @@ class BaseClient(object):
         valid_status_codes = resource_class.Meta.acceptable_status_codes
 
         # I know what you're going to say, and I'd love help making this nicer
+        # reflection assigns the same memory addr to each method otherwise.
         def get(self, method_type=method_type, method_name=method_name,
                 url=url, valid_status_codes=valid_status_codes,
                 resource=resource_class, data=None, uid=None, **kwargs):
@@ -179,8 +180,10 @@ class BaseClient(object):
         """
         if response.status_code not in valid_status_codes:
             raise InvalidStatusCodeError
-        data = response.json()
-        if isinstance(data, list):
-            return [resource(**x) for x in data]
-        else:
-            return [resource(**data)]
+        if response.content:
+            data = response.json()
+            if isinstance(data, list):
+                return [resource(**x) for x in data]
+            else:
+                return [resource(**data)]
+        return True

@@ -31,7 +31,10 @@ class BlogResource(resources.BaseResource):
         )
         methods = (
             'get',
-            'post'
+            'post',
+            'put',
+            'patch',
+            'delete',
         )
 
 
