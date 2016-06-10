@@ -26,7 +26,7 @@ test_requirements = [
 
 setup(
     name='beckett',
-    version='0.3.0',
+    version='0.4.0',
     description="Hypermedia API Client Framework",
     long_description=readme + '\n\n' + history,
     author="Paul Hallett",
