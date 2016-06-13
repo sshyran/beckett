@@ -11,9 +11,6 @@ except ImportError:
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
-
 requirements = [
     'requests==2.10.0',
     'ujson==1.35',
@@ -28,7 +25,7 @@ setup(
     name='beckett',
     version='0.5.0',
     description="Hypermedia API Client Framework",
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author="Paul Hallett",
     author_email='paulandrewhallett@gmail.com',
     url='https://github.com/phalt/beckett',
