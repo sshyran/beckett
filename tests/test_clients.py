@@ -19,6 +19,7 @@ import responses
 from .fixtures import BlogResource, BlogTestClient, PlainTestClient
 
 
+@responses.activate
 def test_custom_client():
     """
     Test our own custom client - PlainTestClient
@@ -27,6 +28,15 @@ def test_custom_client():
     # Our PlainTestClient should have a registered GET method
     # For the Testy resource
     assert hasattr(client, 'get_people')
+    responses.add(responses.GET, 'http://dev/api/peoples/1',
+                  body='''
+                    {"id": 1, "title": "blog title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    people_resource = client.get_people(uid=1)
+    assert people_resource[0].slug == 'blog-title'
 
 
 @responses.activate
@@ -207,3 +217,40 @@ def test_custom_client_get_many_resource_methods():
     assert isinstance(result[0], BlogResource)
     resource1 = result[0]
     assert resource1.title == 'blog title'
+
+
+@responses.activate
+def test_custom_client_get_paginated_response_methods():
+    """
+    Make HTTP GET calls using pagination
+    """
+
+    client = BlogTestClient()
+    # Add a mocked response
+    responses.add(responses.GET, 'http://dev/api/blogs',
+                  body='''{
+                    "count": 2,
+                    "next": "http://dev/api/blogs?page=2",
+                    "objects": [
+                        {
+                            "title": "blog title"
+                        },
+                        {
+                            "title": "Second title"
+                        }
+                        ]
+                    }''',
+                  status=200,
+                  content_type='application/json')
+
+    result = client.get_blog(page=1)
+    assert len(responses.calls) == 1
+    assert responses.calls[0].request.url == 'http://dev/api/blogs?page=1'
+    assert responses.calls[0].request.method == 'GET'
+    assert isinstance(result, list)
+    assert len(result) == 2
+    assert isinstance(result[0], BlogResource)
+    resource = result[0]
+    assert resource.title == 'blog title'
+    resource2 = result[1]
+    assert resource2.title == 'Second title'

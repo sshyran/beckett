@@ -79,9 +79,9 @@ class BaseClient(object):
         - get_single_resource_url
         """
 
-        if method_type in SINGLE_RESOURCE_METHODS and uid:
+        if method_type in SINGLE_RESOURCE_METHODS:
             url = resource.get_single_resource_url(
-                url, uid, **kwargs)
+                url=url, uid=uid, **kwargs)
         headers = {
             'X-CLIENT': self.Meta.name,
             'X-METHOD': method_name,
@@ -185,7 +185,15 @@ class BaseClient(object):
         if response.content:
             data = response.json()
             if isinstance(data, list):
+                # A list of results is always rendered
                 return [resource(**x) for x in data]
             else:
-                return [resource(**data)]
+                # Try and find the paginated resources
+                key = resource.Meta.pagination_key
+                if isinstance(data.get(key), list):
+                    # Only return the paginated responses
+                    return [resource(**x) for x in data.get(key)]
+                else:
+                    # Attempt to render this whole response as a resource
+                    return [resource(**data)]
         return True

@@ -36,6 +36,19 @@ class BlogResource(resources.BaseResource):
             'patch',
             'delete',
         )
+        pagination_key = 'objects'
+
+    @classmethod
+    def get_single_resource_url(cls, url, uid, **kwargs):
+        if kwargs.get('page'):
+            return '{}?page={}'.format(
+                url,
+                kwargs.get('page')
+            )
+        if uid:
+            return '{}/{}'.format(url, uid)
+        else:
+            return url
 
 
 class PlainTestClient(clients.BaseClient):

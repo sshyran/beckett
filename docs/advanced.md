@@ -28,8 +28,8 @@ class Product(BaseResource):
             'get',
         )
 
-    @staticmethod
-    def get_single_resource_url(url, uid, **kwargs):
+    @classmethod
+    def get_single_resource_url(cls, url, uid, **kwargs):
         """
         Our customised URL.
         """

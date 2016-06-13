@@ -2,17 +2,17 @@
 
 import sys
 
+import inflect
+
+from .constants import DEFAULT_VALID_STATUS_CODES
+from .exceptions import BadURLException, MissingUidException
+
 if sys.version_info[0] == 3:
     # Py3
     from urllib.parse import urlparse
 else:
     # Py2
     from urlparse import urlparse
-
-import inflect
-
-from .constants import DEFAULT_VALID_STATUS_CODES
-from .exceptions import BadURLException, MissingUidException
 
 
 class BaseResource(object):
@@ -60,6 +60,8 @@ class BaseResource(object):
         methods = (
             'get',
         )
+        # When receiving paginated results, use this key to render instances.
+        pagination_key = 'results'
 
     def __init__(self, *args, **kwargs):
         self.set_attributes(**kwargs)
@@ -83,8 +85,8 @@ class BaseResource(object):
             if field in self.Meta.attributes:
                 setattr(self, field, value)
 
-    @staticmethod
-    def get_resource_url(resource, base_url):
+    @classmethod
+    def get_resource_url(cls, resource, base_url):
         """
         Construct the URL for talking to this resource.
 
@@ -112,8 +114,8 @@ class BaseResource(object):
         else:
             raise BadURLException
 
-    @staticmethod
-    def get_single_resource_url(resource_url, uid, **kwargs):
+    @classmethod
+    def get_single_resource_url(cls, url, uid, **kwargs):
         """
         Construct the URL for talking to an individual resource.
 
@@ -122,7 +124,7 @@ class BaseResource(object):
 
         if uid is None:
             raise MissingUidException
-        url = '{}/{}'.format(resource_url, uid)
+        url = '{}/{}'.format(url, uid)
         parsed_url = urlparse(url)
         if parsed_url.scheme and parsed_url.netloc:
             return parsed_url.geturl()

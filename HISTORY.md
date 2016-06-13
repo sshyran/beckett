@@ -7,6 +7,7 @@
 ------------
 
 * InvalidStatusCode exceptions now return the status code that was received
+* Handle pagination support with `pagination_key` attribute on Resources
 
 0.4.0 (2016-06-10)
 ------------------
