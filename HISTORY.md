@@ -3,7 +3,7 @@
 ===========
 
 
-0.5.0 (2016)
+0.5.0 (2016-06-13)
 ------------
 
 * InvalidStatusCode exceptions now return the status code that was received
