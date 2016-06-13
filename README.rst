@@ -51,7 +51,8 @@ This package was created with Cookiecutter_.
 
 We use `Python Requests`_ for talking HTTP.
 
-Free software: [ISC license](https://github.com/phalt/beckett/blob/master/LICENSE)
+Free software: ISC license_
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`Python Requests`: https://github.com/audreyr/cookiecutter-pypackage
+.. _license: https://github.com/phalt/beckett/blob/master/LICENSE
