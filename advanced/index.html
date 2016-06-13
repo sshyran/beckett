@@ -94,6 +94,11 @@
                 <li class="toctree-l3"><a href="#response-formats">Response formats</a></li>
                 
             
+                <li class="toctree-l3"><a href="#pagination">Pagination</a></li>
+                
+                    <li><a class="toctree-l4" href="#pagination_key">pagination_key</a></li>
+                
+            
             </ul>
         
     </li>
@@ -155,8 +160,8 @@
             'get',
         )
 
-    @staticmethod
-    def get_single_resource_url(url, uid, **kwargs):
+    @classmethod
+    def get_single_resource_url(cls, url, uid, **kwargs):
         &quot;&quot;&quot;
         Our customised URL.
         &quot;&quot;&quot;
@@ -174,6 +179,51 @@
 
 <h2 id="response-formats">Response formats</h2>
 <p>TODO</p>
+<h2 id="pagination">Pagination</h2>
+<p>Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the <code>get_single_resource_url</code> method on your resource, similarly to the <a href="../advanced/#customising-resource-urls">example above</a>. Because all keyword arguments are passed to this method, you can call the page like so:</p>
+<pre><code class="python">resources = client.get_resource(page=2)
+</code></pre>
+
+<p>and format the URL in the code like so:</p>
+<pre><code class="python">@classmethod
+def get_single_resource_url(cls, url, uid, **kwargs):
+    if kwargs.get('page'):
+        return '{}?page={}'.format(
+            url,
+            kwargs.get('page')
+        )
+</code></pre>
+
+<p>When rendering responses into your resource instances, Beckett will perform the following steps:</p>
+<ol>
+<li>Is the response a list? If yes - render each item in the list as a Resource.</li>
+<li>Is the <code>pagination_key</code> value in this resource declared? If yes, look it up in the response object and render that list into resources.</li>
+<li>Attempt to render the whole response as a single resource instance.</li>
+</ol>
+<h3 id="pagination_key">pagination_key</h3>
+<p>In your Resource, declare a pagination_key attribute:</p>
+<pre><code class="python">
+```python
+class Product(BaseResource):
+
+    class Meta(BaseResource.Meta):
+        ...
+        pagination_key = 'objects'
+</code></pre>
+
+<p>To correspond with a paginated API response like so:</p>
+<pre><code class="json">{
+    &quot;next&quot;: &quot;http://myapi.com/api/resources?page=2&quot;,
+    &quot;objects&quot;: [
+        {
+            &quot;name&quot;: &quot;Resource one&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Resource two&quot;
+        }
+    ]
+}
+</code></pre>
               
             </div>
           </div>

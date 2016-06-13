@@ -210,6 +210,12 @@ class Product(BaseResource):
 <td align="left">Tuple of Strings</td>
 <td align="left">A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.</td>
 </tr>
+<tr>
+<td align="left"><code>pagination_key</code></td>
+<td align="left">No</td>
+<td align="left">String</td>
+<td align="left">The key used to look up paginated responses. The value of this key in an API response will be rendered into instances of this resource. See <a href="../advanced/#pagination">Pagination</a> for more help.</td>
+</tr>
 </tbody>
 </table>
               
