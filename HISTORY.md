@@ -1,5 +1,12 @@
+===========
 📣 History
 ===========
+
+
+0.5.0 (2016)
+------------
+
+* InvalidStatusCode exceptions now return the status code that was received
 
 0.4.0 (2016-06-10)
 ------------------

@@ -177,7 +177,11 @@ class BaseClient(object):
         Handles Response objects
         """
         if response.status_code not in valid_status_codes:
-            raise InvalidStatusCodeError
+            raise InvalidStatusCodeError(
+                'Recieved status code: {}, expected: {}'.format(
+                    response.status_code, valid_status_codes
+                    )
+                )
         if response.content:
             data = response.json()
             if isinstance(data, list):

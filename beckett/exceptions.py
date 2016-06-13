@@ -6,7 +6,7 @@ class BadURLException(Exception):
 
 
 class InvalidStatusCodeError(Exception):
-    """ An Invalid status code was returned for this resource """
+    """ An invalid status code was returned for this resource """
 
 
 class MissingUidException(Exception):
