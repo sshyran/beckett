@@ -46,3 +46,17 @@ class Product(BaseResource):
 | `acceptable_status_codes` | No       | Tuple of Ints    | A tuple list of integers, referring to the HTTP status codes that are considered "acceptable" when communicating with this resource. If a status code is received that does not match this set, an error will be raised. |
 | `methods`                 | No       | Tuple of Strings | A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.                               |
 | `pagination_key`          | No       | String           | The key used to look up paginated responses. The value of this key in an API response will be rendered into instances of this resource. See [Pagination](/advanced/#pagination) for more help.                           |
+
+### - URL generation
+
+Beckett attempts to auto generate URLs based on good RESTful style URI schemes. If you do nothing to manipulate the URLs, Beckett will call the following URLs for the related HTTP Methods:
+
+| Method | URI Structure                                      | Example                            |
+|:-------|:---------------------------------------------------|:-----------------------------------|
+| GET    | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
+| PUT    | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
+| POST   | Client.Meta.base_url/Resource.Meta.plural_name     | `http://myapi.com/api/products`    |
+| PATCH  | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
+| DELETE | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
+
+URL structures can be completely modified by subclassing the `get_single_resource_url` method on Resources. See [customising resource urls](advanced/#customising-resource-urls) for more information.

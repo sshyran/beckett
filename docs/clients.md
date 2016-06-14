@@ -53,10 +53,10 @@ This allows some flexibility when customising these methods.
 
 ### Method arguments
 
-| Argument | Type          | Example                                  |
-|:---------|:--------------|:-----------------------------------------|
-| `uid`    | string or int | `1` or `'some_slug'`                     |
-| `data`   | dictionary    | {'name': 'product', 'slug': 'some_slug'} |
+| Argument | Type          | Example                                    |
+|:---------|:--------------|:-------------------------------------------|
+| `uid`    | string or int | `1` or `'some_slug'`                       |
+| `data`   | dictionary    | `{'name': 'product', 'slug': 'some_slug'}` |
 
 ### - Meta Attributes
 
