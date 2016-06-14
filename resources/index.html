@@ -78,6 +78,8 @@
                 
                     <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
                 
+                    <li><a class="toctree-l4" href="#-url-generation">- URL generation</a></li>
+                
             
             </ul>
         
@@ -218,6 +220,45 @@ class Product(BaseResource):
 </tr>
 </tbody>
 </table>
+<h3 id="-url-generation">- URL generation</h3>
+<p>Beckett attempts to auto generate URLs based on good RESTful style URI schemes. If you do nothing to manipulate the URLs, Beckett will call the following URLs for the related HTTP Methods:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Method</th>
+<th align="left">URI Structure</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">GET</td>
+<td align="left">Client.Meta.base_url/Resource.Meta.plural_name/uid</td>
+<td align="left"><code>http://myapi.com/api/products/1/</code></td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">Client.Meta.base_url/Resource.Meta.plural_name/uid</td>
+<td align="left"><code>http://myapi.com/api/products/1/</code></td>
+</tr>
+<tr>
+<td align="left">POST</td>
+<td align="left">Client.Meta.base_url/Resource.Meta.plural_name</td>
+<td align="left"><code>http://myapi.com/api/products</code></td>
+</tr>
+<tr>
+<td align="left">PATCH</td>
+<td align="left">Client.Meta.base_url/Resource.Meta.plural_name/uid</td>
+<td align="left"><code>http://myapi.com/api/products/1/</code></td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">Client.Meta.base_url/Resource.Meta.plural_name/uid</td>
+<td align="left"><code>http://myapi.com/api/products/1/</code></td>
+</tr>
+</tbody>
+</table>
+<p>URL structures can be completely modified by subclassing the <code>get_single_resource_url</code> method on Resources. See <a href="../advanced/#customising-resource-urls">customising resource urls</a> for more information.</p>
               
             </div>
           </div>
