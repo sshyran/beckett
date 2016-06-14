@@ -84,7 +84,7 @@ Our client generates a collection of methods for every registered resource and u
 A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:
 
 ```python
-my_client.get_pokemon(1)
+my_client.get_pokemon(uid=1)
 ```
 
 The `PokemonClient` will look at `PokemonResource` `methods` attribute to determine what HTTP methods are available on it. The default is:
