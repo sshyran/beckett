@@ -104,7 +104,8 @@ resource = 'pokemons'
 The `1` will be used by the `identifier` attribute on `PokemonResource` to help construct the URL when making HTTP calls.
 
 
-That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advaced][advanced] tips guide for some more exciting features.
+That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advanced][advanced] tips guide for some more exciting features.
 
 [resources]: /resources
 [clients]: /clients
+[advanced]: /advanced
