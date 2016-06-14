@@ -197,7 +197,7 @@ result.name
 
 <p>Our client generates a collection of methods for every registered resource and understands how to properly call each method.</p>
 <p>A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:</p>
-<pre><code class="python">my_client.get_pokemon(1)
+<pre><code class="python">my_client.get_pokemon(uid=1)
 </code></pre>
 
 <p>The <code>PokemonClient</code> will look at <code>PokemonResource</code> <code>methods</code> attribute to determine what HTTP methods are available on it. The default is:</p>
