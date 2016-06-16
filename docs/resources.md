@@ -60,3 +60,67 @@ Beckett attempts to auto generate URLs based on good RESTful style URI schemes. 
 | DELETE | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
 
 URL structures can be completely modified by subclassing the `get_single_resource_url` method on Resources. See [customising resource urls](advanced/#customising-resource-urls) for more information.
+
+## class HypermediaResource
+
+A simple representation of a resource that supports hypermedia links to related resources.
+
+**Example:**
+```python
+# myresources.py
+from beckett.resources import HypermediaResource
+
+class Designer(HypermediaResource):
+    class Meta(HypermediaResource.Meta):
+        name = 'Designer'
+        identifier = 'slug'
+        attributes = (
+            'slug',
+            'name',
+        )
+        methods = (
+            'get',
+        )
+        # Additional required attributes
+        base_url = 'http://myapi.com/api'
+        related_resources = ()
+
+
+class Product(HypermediaResource):
+
+    class Meta(HypermediaResource.Meta):
+        name = 'Product'
+        identifier = 'slug'
+        attributes = (
+            'slug',
+            'name',
+            'price',
+            'discount'
+        )
+        methods = (
+            'get',
+        )
+        # Additional required attributes
+        base_url = 'http://myapi.com/api'
+        related_resources = (
+            Designer,
+        )
+
+```
+**Usage:**
+```bash
+# Note: Data will usually come straight from the client method
+>>> data = {'name': 'Tasty product', 'slug': 'sluggy', 'designer': 'http://myapi.com/api/designers/some-designer'}
+>>> product = Product(**data)
+>>> product.get_designer(uid='some-designer')
+<Designer | Some Designer>
+```
+
+### - Meta Attributes
+
+HypermediaResource has two additional, required, attributes that are essential for making hypermedia work
+
+| Attribute           | Required | Type             | Description                                                                                                     |
+|:--------------------|:---------|:-----------------|:----------------------------------------------------------------------------------------------------------------|
+| `base_url`          | Yes      | String           | The base url of this resource                                                                                   |
+| `related_resources` | Yes      | Tuple of classes | A tuple of classes that are related to this resource, and should be expected in the JSON response from the API. |
