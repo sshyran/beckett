@@ -81,6 +81,11 @@
                     <li><a class="toctree-l4" href="#-url-generation">- URL generation</a></li>
                 
             
+                <li class="toctree-l3"><a href="#class-hypermediaresource">class HypermediaResource</a></li>
+                
+                    <li><a class="toctree-l4" href="#-meta-attributes_1">- Meta Attributes</a></li>
+                
+            
             </ul>
         
     </li>
@@ -259,6 +264,84 @@ class Product(BaseResource):
 </tbody>
 </table>
 <p>URL structures can be completely modified by subclassing the <code>get_single_resource_url</code> method on Resources. See <a href="../advanced/#customising-resource-urls">customising resource urls</a> for more information.</p>
+<h2 id="class-hypermediaresource">class HypermediaResource</h2>
+<p>A simple representation of a resource that supports hypermedia links to related resources.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="python"># myresources.py
+from beckett.resources import HypermediaResource
+
+class Designer(HypermediaResource):
+    class Meta(HypermediaResource.Meta):
+        name = 'Designer'
+        identifier = 'slug'
+        attributes = (
+            'slug',
+            'name',
+        )
+        methods = (
+            'get',
+        )
+        # Additional required attributes
+        base_url = 'http://myapi.com/api'
+        related_resources = ()
+
+
+class Product(HypermediaResource):
+
+    class Meta(HypermediaResource.Meta):
+        name = 'Product'
+        identifier = 'slug'
+        attributes = (
+            'slug',
+            'name',
+            'price',
+            'discount'
+        )
+        methods = (
+            'get',
+        )
+        # Additional required attributes
+        base_url = 'http://myapi.com/api'
+        related_resources = (
+            Designer,
+        )
+
+</code></pre>
+
+<p><strong>Usage:</strong></p>
+<pre><code class="bash"># Note: Data will usually come straight from the client method
+&gt;&gt;&gt; data = {'name': 'Tasty product', 'slug': 'sluggy', 'designer': 'http://myapi.com/api/designers/some-designer'}
+&gt;&gt;&gt; product = Product(**data)
+&gt;&gt;&gt; product.get_designer(uid='some-designer')
+&lt;Designer | Some Designer&gt;
+</code></pre>
+
+<h3 id="-meta-attributes_1">- Meta Attributes</h3>
+<p>HypermediaResource has two additional, required, attributes that are essential for making hypermedia work</p>
+<table>
+<thead>
+<tr>
+<th align="left">Attribute</th>
+<th align="left">Required</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>base_url</code></td>
+<td align="left">Yes</td>
+<td align="left">String</td>
+<td align="left">The base url of this resource</td>
+</tr>
+<tr>
+<td align="left"><code>related_resources</code></td>
+<td align="left">Yes</td>
+<td align="left">Tuple of classes</td>
+<td align="left">A tuple of classes that are related to this resource, and should be expected in the JSON response from the API.</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div>
