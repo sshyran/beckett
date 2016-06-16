@@ -54,7 +54,6 @@ def test_custom_client_get_methods():
                      "content": "This is some content"}''',
                   status=200,
                   content_type='application/json')
-
     result = client.get_blog(uid=1)
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'

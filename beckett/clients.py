@@ -29,42 +29,11 @@ SINGLE_RESOURCE_METHODS = (
 )
 
 
-class BaseClient(object):
-
-    class Meta:
-        # The base_url for the API of this client.
-        base_url = NotImplemented
-        # A list of registered resources.
-        resources = NotImplemented
-
-    def __init__(self, *args, **kwargs):
-        self.assign_resources(self.Meta.resources)
-        self.resources = self.Meta.resources
-        self.session = requests.Session()
-
-    def assign_resources(self, resource_class_list):
-        """
-        Given a tuple of Resource classes, parse their Meta.methods
-        attributes and  client methods for communicating with those resources.
-
-        Subclass this method to control how resources are assigned.
-        """
-        for resource in resource_class_list:
-            self.assign_methods(resource)
-
-    def assign_methods(self, resource_class):
-        """
-        Given a resource_class and it's Meta.methods tuple,
-        assign methods for communicating with that resource.
-        """
-        assert all([
-            x.upper() in VALID_METHODS for x in resource_class.Meta.methods])
-        for method in resource_class.Meta.methods:
-
-            self._assign_method(
-                resource_class,
-                method.upper()
-            )
+class HTTPClient(object):
+    """
+    HTTPClient has just the `call_api` method, so we can share this between
+    various objects that require HTTP functionality
+    """
 
     def call_api(self, method_type, method_name, url,
                  valid_status_codes, resource, data,
@@ -99,6 +68,72 @@ class BaseClient(object):
         response = self.session.send(prepared_request)
         return self._handle_response(response, valid_status_codes, resource)
 
+    def _handle_response(self, response, valid_status_codes, resource):
+        """
+        Handles Response objects
+        """
+        if response.status_code not in valid_status_codes:
+            raise InvalidStatusCodeError(
+                'Recieved status code: {}, expected: {}'.format(
+                    response.status_code, valid_status_codes
+                    )
+                )
+        if response.content:
+            data = response.json()
+            if isinstance(data, list):
+                # A list of results is always rendered
+                return [resource(**x) for x in data]
+            else:
+                # Try and find the paginated resources
+                key = resource.Meta.pagination_key
+                if isinstance(data.get(key), list):
+                    # Only return the paginated responses
+                    return [resource(**x) for x in data.get(key)]
+                else:
+                    # Attempt to render this whole response as a resource
+                    return [resource(**data)]
+        return True
+
+
+class BaseClient(HTTPClient):
+
+    class Meta:
+        # The name of this client API
+        name = NotImplemented
+        # The base_url for the API of this client.
+        base_url = NotImplemented
+        # A list of registered resources.
+        resources = NotImplemented
+
+    def __init__(self, *args, **kwargs):
+        self.assign_resources(self.Meta.resources)
+        self.resources = self.Meta.resources
+        self.session = requests.Session()
+
+    def assign_resources(self, resource_class_list):
+        """
+        Given a tuple of Resource classes, parse their Meta.methods
+        attributes and  client methods for communicating with those resources.
+
+        Subclass this method to control how resources are assigned.
+        """
+        for resource in resource_class_list:
+            self.assign_methods(resource)
+
+    def assign_methods(self, resource_class):
+        """
+        Given a resource_class and it's Meta.methods tuple,
+        assign methods for communicating with that resource.
+        """
+        assert all([
+            x.upper() in VALID_METHODS for x in resource_class.Meta.methods])
+        for method in resource_class.Meta.methods:
+
+            self._assign_method(
+                resource_class,
+                method.upper()
+            )
+
     def _assign_method(self, resource_class, method_type):
         """
         Using reflection, assigns a new method to this class.
@@ -108,13 +143,10 @@ class BaseClient(object):
         If we assigned the same method to each method, it's the same
         method in memory, so we need one for each acceptable HTTP method.
         """
-
-        method_name = '{}_{}'.format(
-            method_type.lower(), resource_class.Meta.name.lower())
+        method_name = resource_class.get_method_name(resource_class, method_type)
         url = resource_class.get_resource_url(
             resource_class, base_url=self.Meta.base_url
         )
-
         valid_status_codes = resource_class.Meta.acceptable_status_codes
 
         # I know what you're going to say, and I'd love help making this nicer
@@ -171,29 +203,3 @@ class BaseClient(object):
             self, method_name,
             types.MethodType(method_map[method_type], self)
         )
-
-    def _handle_response(self, response, valid_status_codes, resource):
-        """
-        Handles Response objects
-        """
-        if response.status_code not in valid_status_codes:
-            raise InvalidStatusCodeError(
-                'Recieved status code: {}, expected: {}'.format(
-                    response.status_code, valid_status_codes
-                    )
-                )
-        if response.content:
-            data = response.json()
-            if isinstance(data, list):
-                # A list of results is always rendered
-                return [resource(**x) for x in data]
-            else:
-                # Try and find the paginated resources
-                key = resource.Meta.pagination_key
-                if isinstance(data.get(key), list):
-                    # Only return the paginated responses
-                    return [resource(**x) for x in data.get(key)]
-                else:
-                    # Attempt to render this whole response as a resource
-                    return [resource(**data)]
-        return True

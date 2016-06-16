@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import types
 
 import inflect
 
+from .clients import HTTPClient
 from .constants import DEFAULT_VALID_STATUS_CODES
 from .exceptions import BadURLException, MissingUidException
 
@@ -130,3 +132,62 @@ class BaseResource(object):
             return parsed_url.geturl()
         else:
             raise BadURLException
+
+    @staticmethod
+    def get_method_name(resource, method_type):
+        """
+        Generate a method name for this resource based on the method type.
+        """
+        return '{}_{}'.format(method_type.lower(), resource.Meta.name.lower())
+
+
+class HypermediaResource(BaseResource, HTTPClient):
+    """
+    A HypermediaResource is similar to a BaseResource except
+    it understands relationships between attributes that
+    are URLs to related registered resources.
+    """
+    class Meta(BaseResource.Meta):
+        # HypermediaResource requires a base_url attribute
+        base_url = NotImplemented
+        related_resources = ()
+
+    def set_related_method(self, resource, value, base_url):
+        """
+        Using reflection, generate the related method and return it.
+        """
+        method_name = self.get_method_name(resource, 'get')
+
+        url = resource.get_resource_url(
+            resource, base_url=base_url
+        )
+
+        def get(self, method_type='get', method_name=method_name,
+                url=url, valid_status_codes=self.Meta.valid_status_codes,
+                resource=resource, data=None, uid=None, **kwargs):
+            return self.call_api(
+                method_type, method_name,
+                url, valid_status_codes, resource,
+                data, uid=uid, **kwargs)
+
+        setattr(
+            self, method_name,
+            types.MethodType(get, self)
+        )
+
+    def set_attributes(self, **kwargs):
+        """
+        Similar to BaseResource.set_attributes except
+        it will attempt to match URL strings with registered
+        related resources, and build their get_* method and
+        attach it to this resource.
+        """
+        if not self.Meta.related_resources:
+            super(HypermediaResource, self).set_attributes(**kwargs)
+        for field, value in kwargs.items():
+            for resource in self.Meta.related_resources:
+                if self.match_url(resource, value):
+                    self.set_related_method(resource, value)
+                    kwargs.pop(field, None)
+                elif field in self.Meta.attributes:
+                    setattr(self, field, value)
