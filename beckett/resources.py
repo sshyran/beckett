@@ -57,7 +57,7 @@ class BaseResource(object):
         attributes = (identifier,)
         # HTTP status codes that are considered "acceptable"
         # when calling this resource
-        acceptable_status_codes = DEFAULT_VALID_STATUS_CODES
+        valid_status_codes = DEFAULT_VALID_STATUS_CODES
         # HTTP Methods that work on this resource
         methods = (
             'get',
@@ -175,6 +175,16 @@ class HypermediaResource(BaseResource, HTTPClient):
             types.MethodType(get, self)
         )
 
+    def match_url(self, resource, value):
+        """
+        Determine if an attribute is a url, and then
+        determine if it matches any related resources.
+        """
+        # TODO obviously make this better
+        if 'http://' in value:
+            return True
+        return False
+
     def set_attributes(self, **kwargs):
         """
         Similar to BaseResource.set_attributes except
@@ -187,7 +197,7 @@ class HypermediaResource(BaseResource, HTTPClient):
         for field, value in kwargs.items():
             for resource in self.Meta.related_resources:
                 if self.match_url(resource, value):
-                    self.set_related_method(resource, value)
-                    kwargs.pop(field, None)
+                    self.set_related_method(
+                        resource, value, resource.Meta.base_url)
                 elif field in self.Meta.attributes:
                     setattr(self, field, value)

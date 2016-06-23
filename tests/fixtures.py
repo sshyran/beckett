@@ -69,3 +69,53 @@ class BlogTestClient(clients.BaseClient):
         resources = (
             BlogResource,
         )
+
+
+# Hypermedia fixtures
+
+class HypermediaAuthorsResource(resources.HypermediaResource):
+
+    class Meta(resources.HypermediaResource.Meta):
+        name = 'Authors'
+        base_url = 'http://dev/api'
+        identifier = 'name'
+        attributes = (
+            'name',
+            'slug',
+            'another_thing',
+        )
+        methods = (
+            'get',
+        )
+
+
+class HypermediaBlogsResource(resources.HypermediaResource):
+
+    class Meta(resources.HypermediaResource.Meta):
+        name = 'Blogs'
+        identifier = 'name'
+        base_url = 'http://dev/api'
+        attributes = (
+            'name',
+            'slug',
+            'another_thing',
+            'author',
+        )
+        methods = (
+            'get',
+        )
+
+        related_resources = (
+            HypermediaAuthorsResource,
+        )
+
+
+class HypermediaBlogTestClient(clients.BaseClient):
+
+    class Meta(clients.BaseClient.Meta):
+        name = 'test_hyper_blog_client'
+        base_url = 'http://dev/api'
+        resources = (
+            HypermediaBlogsResource,
+            HypermediaAuthorsResource,
+        )

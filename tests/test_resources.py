@@ -10,7 +10,7 @@ Tests for `beckett.resources` module.
 
 from beckett.resources import BaseResource
 
-from tests.fixtures import PeopleResource
+from tests.fixtures import PeopleResource, HypermediaBlogsResource
 
 
 def test_base_resource_attributes():
@@ -40,4 +40,18 @@ def test_custom_resource():
     assert not hasattr(instance, 'not_valid')
     assert instance.__str__() == '<People | Wort wort>'
     # It should also have parent Meta attributes
-    assert hasattr(instance.Meta, 'acceptable_status_codes')
+    assert hasattr(instance.Meta, 'valid_status_codes')
+
+
+def test_hypermedia_custom_resource():
+    """
+    Test our custom Hypermedia resource loads correctly
+    """
+    data = {
+        'name': 'Wort wort',
+        'slug': 'sluggy',
+        'not_valid': 'nooo',
+        'author': 'http://dev/api/authors/1'
+    }
+    instance = HypermediaBlogsResource(**data)
+    assert hasattr(instance, 'get_authors')

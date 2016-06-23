@@ -147,7 +147,7 @@ class BaseClient(HTTPClient):
         url = resource_class.get_resource_url(
             resource_class, base_url=self.Meta.base_url
         )
-        valid_status_codes = resource_class.Meta.acceptable_status_codes
+        valid_status_codes = resource_class.Meta.valid_status_codes
 
         # I know what you're going to say, and I'd love help making this nicer
         # reflection assigns the same memory addr to each method otherwise.
