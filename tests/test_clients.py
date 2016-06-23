@@ -107,7 +107,6 @@ def test_custom_client_delete_methods():
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'
     assert responses.calls[0].request.method == 'DELETE'
-    assert result
 
 
 @responses.activate

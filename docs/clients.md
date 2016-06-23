@@ -43,13 +43,17 @@ Based on the `methods` in a [Resource](/resources), the following methods are cr
 | `patch`  | PATCH       | uid, data  | patch_product  |
 | `delete` | DELETE      | uid        | delete_product |
 
-\* Custom keyword arguments can be passed and will appear in the following methods:
+Additional keyword arguments can be passed and will appear in the following methods were applicable:
 
 ```
 BaseResource.get_single_resource_url
+HTTPClient.get_http_headers
+HTTPClient.prepare_http_request
+HypermediaResource.get_http_headers
+HypermediaResource.prepare_http_request
 ```
 
-This allows some flexibility when customising these methods.
+This allows for some flexibility when customising these methods.
 
 ### Method arguments
 

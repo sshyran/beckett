@@ -82,6 +82,9 @@ class BaseResource(object):
         Only sets items in the `self.Meta.attributes` white list.
 
         Subclass this method to customise attributes.
+
+        Args:
+            kwargs: Keyword arguements passed into the init of this class
         """
         for field, value in kwargs.items():
             if field in self.Meta.attributes:
@@ -100,9 +103,11 @@ class BaseResource(object):
 
         http://myapi.com/api/resource/1
 
-        Subclass the `get_single_resource_url` method to modify that.
-
-        Subclass this method to customise your resource URL structure.
+        Args:
+            resource: The resource class instance
+            base_url: The Base URL of this API service.
+        returns:
+            resource_url: The URL for this resource
         """
         if resource.Meta.resource_name:
             url = '{}/{}'.format(base_url, resource.Meta.resource_name)
@@ -112,9 +117,10 @@ class BaseResource(object):
             url = '{}/{}'.format(base_url, plural_name)
         parsed_url = urlparse(url)
         if parsed_url.scheme and parsed_url.netloc:
-            return parsed_url.geturl()
+            resource_url = parsed_url.geturl()
         else:
             raise BadURLException
+        return resource_url
 
     @classmethod
     def get_single_resource_url(cls, url, uid, **kwargs):
@@ -122,6 +128,13 @@ class BaseResource(object):
         Construct the URL for talking to an individual resource.
 
         http://myapi.com/api/resource/1
+
+        Args:
+            url: The url for this resource
+            uid: The unique identifier for an individual resource
+            kwargs: Additional keyword argueents
+        returns:
+            final_url: The URL for this individual resource
         """
 
         if uid is None:
@@ -129,9 +142,10 @@ class BaseResource(object):
         url = '{}/{}'.format(url, uid)
         parsed_url = urlparse(url)
         if parsed_url.scheme and parsed_url.netloc:
-            return parsed_url.geturl()
+            final_url = parsed_url.geturl()
         else:
             raise BadURLException
+        return final_url
 
     @staticmethod
     def get_method_name(resource, method_type):
