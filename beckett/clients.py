@@ -14,6 +14,9 @@ class HTTPClient(object):
     various objects that require HTTP functionality
     """
 
+    def __init__(self, *args, **kwargs):
+        self.session = requests.Session()
+
     def prepare_http_request(self, method_type, params, **kwargs):
         """
         Prepares the HTTP REQUEST and returns it.
@@ -137,9 +140,9 @@ class BaseClient(HTTPClient):
         resources = NotImplemented
 
     def __init__(self, *args, **kwargs):
+        super(BaseClient, self).__init__(*args, **kwargs)
         self.assign_resources(self.Meta.resources)
         self.resources = self.Meta.resources
-        self.session = requests.Session()
 
     def assign_resources(self, resource_class_list):
         """
