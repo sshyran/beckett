@@ -115,12 +115,7 @@ class BaseResource(object):
             p = inflect.engine()
             plural_name = p.plural(resource.Meta.name.lower())
             url = '{}/{}'.format(base_url, plural_name)
-        parsed_url = urlparse(url)
-        if parsed_url.scheme and parsed_url.netloc:
-            resource_url = parsed_url.geturl()
-        else:
-            raise BadURLException
-        return resource_url
+        return cls._parse_url_and_validate(url)
 
     @classmethod
     def get_single_resource_url(cls, url, uid, **kwargs):
@@ -140,12 +135,7 @@ class BaseResource(object):
         if uid is None:
             raise MissingUidException
         url = '{}/{}'.format(url, uid)
-        parsed_url = urlparse(url)
-        if parsed_url.scheme and parsed_url.netloc:
-            final_url = parsed_url.geturl()
-        else:
-            raise BadURLException
-        return final_url
+        return cls._parse_url_and_validate(url)
 
     @staticmethod
     def get_method_name(resource, method_type):
@@ -153,6 +143,25 @@ class BaseResource(object):
         Generate a method name for this resource based on the method type.
         """
         return '{}_{}'.format(method_type.lower(), resource.Meta.name.lower())
+
+    @classmethod
+    def _parse_url_and_validate(cls, url):
+        """
+        Recieves a URL string and validates it using urlparse.
+
+        Args:
+            url: A URL string
+        Returns:
+            parsed_url: A validated URL
+        Raises:
+            BadURLException
+        """
+        parsed_url = urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc:
+            final_url = parsed_url.geturl()
+        else:
+            raise BadURLException
+        return final_url
 
 
 class HypermediaResource(BaseResource, HTTPClient):
