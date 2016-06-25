@@ -198,15 +198,29 @@ class HypermediaResource(BaseResource, HTTPClient):
             types.MethodType(get, self)
         )
 
-    def match_url(self, resource, value):
+    def match_urls_to_resources(self, url_values):
         """
-        Determine if an attribute is a url, and then
-        determine if it matches any related resources.
+        For the list of related resources, and the list of
+        valid URLs, try and match them up.
+
+        If they match, assign a method to this class.
+
+        Args:
+            url_values: A dictionary of keys and URL strings that
+                        could be related resources.
+        Returns:
+            valid_values: The values that are valid
         """
-        # TODO obviously make this better
-        if 'http://' in value:
-            return True
-        return False
+        valid_values = {}
+        for resource in self.Meta.related_resources:
+            for k, v in url_values.items():
+                resource_url = resource.get_resource_url(
+                    resource, resource.Meta.base_url)
+                if resource_url in v:
+                    self.set_related_method(
+                        resource, v, resource.Meta.base_url)
+                    valid_values[k] = v
+        return valid_values
 
     def set_attributes(self, **kwargs):
         """
@@ -217,10 +231,20 @@ class HypermediaResource(BaseResource, HTTPClient):
         """
         if not self.Meta.related_resources:
             super(HypermediaResource, self).set_attributes(**kwargs)
+
+        # Extract all the values that are URLs
+        url_values = {}
+        for k, v in kwargs.items():
+            try:
+                self._parse_url_and_validate(v)
+                url_values[k] = v
+            except BadURLException:
+                # This is a badly formed URL or not a URL at all, so skip
+                pass
+        # Assign the valid method values and then remove them from the kwargs
+        assigned_values = self.match_urls_to_resources(url_values)
+        [kwargs.pop(k, None) for k in assigned_values.keys()]
+        # Assign the rest as attributes.
         for field, value in kwargs.items():
-            for resource in self.Meta.related_resources:
-                if self.match_url(resource, value):
-                    self.set_related_method(
-                        resource, value, resource.Meta.base_url)
-                elif field in self.Meta.attributes:
+                if field in self.Meta.attributes:
                     setattr(self, field, value)
