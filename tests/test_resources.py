@@ -55,3 +55,19 @@ def test_hypermedia_custom_resource():
     }
     instance = HypermediaBlogsResource(**data)
     assert hasattr(instance, 'get_authors')
+
+
+def test_hypermedia_custom_resource_non_registered_urls():
+    """
+    Test our custom Hypermedia resource handles
+    URls that aren't registered.
+    """
+    data = {
+        'name': 'Wort wort',
+        'slug': 'sluggy',
+        'not_valid': 'nooo',
+        # This should not appear!
+        'author': 'http://dev/api/foobar/1'
+    }
+    instance = HypermediaBlogsResource(**data)
+    assert not hasattr(instance, 'get_authors')
