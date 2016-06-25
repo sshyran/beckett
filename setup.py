@@ -13,7 +13,6 @@ with open('README.rst') as readme_file:
 
 requirements = [
     'requests==2.10.0',
-    'ujson==1.35',
     'inflect==0.2.5',
     'six==1.10.0'
 ]
