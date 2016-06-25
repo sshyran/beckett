@@ -77,6 +77,7 @@ class HypermediaAuthorsResource(resources.HypermediaResource):
 
     class Meta(resources.HypermediaResource.Meta):
         name = 'Authors'
+        resource_name = 'authors'
         base_url = 'http://dev/api'
         identifier = 'name'
         attributes = (

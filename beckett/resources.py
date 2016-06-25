@@ -5,6 +5,8 @@ import types
 
 import inflect
 
+import requests
+
 from .clients import HTTPClient
 from .constants import DEFAULT_VALID_STATUS_CODES
 from .exceptions import BadURLException, MissingUidException
@@ -175,6 +177,10 @@ class HypermediaResource(BaseResource, HTTPClient):
         base_url = NotImplemented
         related_resources = ()
 
+    def __init__(self, *args, **kwargs):
+        super(HypermediaResource, self).__init__(*args, **kwargs)
+        self.session = requests.Session()
+
     def set_related_method(self, resource, value, base_url):
         """
         Using reflection, generate the related method and return it.
@@ -185,7 +191,7 @@ class HypermediaResource(BaseResource, HTTPClient):
             resource, base_url=base_url
         )
 
-        def get(self, method_type='get', method_name=method_name,
+        def get(self, method_type='GET', method_name=method_name,
                 url=url, valid_status_codes=self.Meta.valid_status_codes,
                 resource=resource, data=None, uid=None, **kwargs):
             return self.call_api(

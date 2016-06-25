@@ -8,9 +8,13 @@ test_resources
 Tests for `beckett.resources` module.
 """
 
+import responses
+
 from beckett.resources import BaseResource
 
-from tests.fixtures import PeopleResource, HypermediaBlogsResource
+from tests.fixtures import (
+    PeopleResource, HypermediaAuthorsResource, HypermediaBlogsResource
+)
 
 
 def test_base_resource_attributes():
@@ -71,3 +75,26 @@ def test_hypermedia_custom_resource_non_registered_urls():
     }
     instance = HypermediaBlogsResource(**data)
     assert not hasattr(instance, 'get_authors')
+
+
+@responses.activate
+def test_hypermedia_custom_resource_calling():
+    """
+    Test our custom Hypermedia resource make HTTP calls correctly
+    """
+    responses.add(responses.GET, 'http://dev/api/authors/1',
+                  body='''
+                    {"id": "1", "title": "blog title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    data = {
+        'name': 'Wort wort',
+        'slug': 'sluggy',
+        'not_valid': 'nooo',
+        'author': 'http://dev/api/authors/1'
+    }
+    instance = HypermediaBlogsResource(**data)
+    response = instance.get_authors(uid=1)
+    assert isinstance(response[0], HypermediaAuthorsResource)
