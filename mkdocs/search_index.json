@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/",
-            "text": "\ud83d\udcab Beckett\n\n\nHypermedia API Client Framework\n\n\n\n\nBeckett is a convention-based framework for building Python interfaces around HTTP APIs.\n\n\n\n\n\n\n\n\n\n\n\ud83d\udcd6 Features\n\n\n\n\nDefine your API client in Python instead of a data serialization language.\n\n\nEncourages good HTTP and REST practices without being too strict.\n\n\nResources are transformed into typed instances - no more raw dictionaries!\n\n\nAutomatic URL routing for RESTful interaction to your resources.\n\n\nHypermedia relationship links are automagically resolved into python methods.\n\n\nSupports hypermedia response formats such as JSONAPI and HAL. [IN DEV]\n\n\nWorks out of the box, but each resource is completely configurable. [IN DEV]\n\n\n\n\n\ud83c\udfd7 Status\n\n\nBeckett is \nstable\n and suitable for projects, but expect occasional updates for bug fixes.\n\n\n\ud83c\udfa5 Credits\n\n\nThis package was created with \nCookiecutter\n.\n\n\nWe use \nPython Requests\n for talking HTTP.\n\n\nFree software: \nISC license",
+            "text": "\ud83d\udcab Beckett\n\n\nHypermedia API Client Framework\n\n\n\n\nBeckett is a convention-based framework for building Python interfaces around HTTP APIs.\n\n\n\n\n\n\n\n\n\n\n\ud83d\udcd6 Features\n\n\n\n\nDefine your API client in Python instead of a data serialization language.\n\n\nEncourages good HTTP and REST practices without being too strict.\n\n\nResources are transformed into typed instances - no more raw dictionaries!\n\n\nAutomatic URL routing for RESTful interaction to your resources.\n\n\nHypermedia relationship links are automagically resolved into python methods.\n\n\nSupports hypermedia response formats such as JSONAPI and HAL. [IN DEV]\n\n\nWorks out of the box, but each resource is completely configurable.\n\n\n\n\n\ud83c\udfd7 Status\n\n\nBeckett is \nstable\n and suitable for projects, but expect occasional updates for bug fixes.\n\n\n\ud83c\udfa5 Credits\n\n\nThis package was created with \nCookiecutter\n.\n\n\nWe use \nPython Requests\n for talking HTTP.\n\n\nFree software: \nISC license",
             "title": "Home"
         },
         {
@@ -12,7 +12,7 @@
         },
         {
             "location": "/#features",
-            "text": "Define your API client in Python instead of a data serialization language.  Encourages good HTTP and REST practices without being too strict.  Resources are transformed into typed instances - no more raw dictionaries!  Automatic URL routing for RESTful interaction to your resources.  Hypermedia relationship links are automagically resolved into python methods.  Supports hypermedia response formats such as JSONAPI and HAL. [IN DEV]  Works out of the box, but each resource is completely configurable. [IN DEV]",
+            "text": "Define your API client in Python instead of a data serialization language.  Encourages good HTTP and REST practices without being too strict.  Resources are transformed into typed instances - no more raw dictionaries!  Automatic URL routing for RESTful interaction to your resources.  Hypermedia relationship links are automagically resolved into python methods.  Supports hypermedia response formats such as JSONAPI and HAL. [IN DEV]  Works out of the box, but each resource is completely configurable.",
             "title": "\ud83d\udcd6 Features"
         },
         {
