@@ -206,11 +206,15 @@ class MyClient(BaseClient):
 </tr>
 </tbody>
 </table>
-<p>* Custom keyword arguments can be passed and will appear in the following methods:</p>
+<p>Additional keyword arguments can be passed and will appear in the following methods were applicable:</p>
 <pre><code>BaseResource.get_single_resource_url
+HTTPClient.get_http_headers
+HTTPClient.prepare_http_request
+HypermediaResource.get_http_headers
+HypermediaResource.prepare_http_request
 </code></pre>
 
-<p>This allows some flexibility when customising these methods.</p>
+<p>This allows for some flexibility when customising these methods.</p>
 <h3 id="method-arguments">Method arguments</h3>
 <table>
 <thead>
