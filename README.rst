@@ -41,7 +41,7 @@ https://phalt.github.io/beckett
 🏗 Status
 ----------
 
-Beckett is currently under **major development** and is not ready for use.
+Beckett is **stable** and suitable for projects, but expect occasional updates for bug fixes.
 
 
 🎥 Credits

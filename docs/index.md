@@ -27,7 +27,7 @@ Beckett is a convention-based framework for building Python interfaces around HT
 🏗 Status
 ----------
 
-Beckett is currently under **major development** and usage in critical projects is not recommended.
+Beckett is **stable** and suitable for projects, but expect occasional updates for bug fixes.
 
 
 🎥 Credits
