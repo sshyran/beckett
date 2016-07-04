@@ -164,7 +164,7 @@
         )
 
     @classmethod
-    def get_single_resource_url(cls, url, uid, **kwargs):
+    def get_url(cls, url, uid, **kwargs):
         &quot;&quot;&quot;
         Our customised URL.
         &quot;&quot;&quot;
@@ -210,13 +210,13 @@ session data or attach SSL certificates. For example:</p>
 </code></pre>
 
 <h2 id="pagination">Pagination</h2>
-<p>Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the <code>get_single_resource_url</code> method on your resource, similarly to the <a href="../advanced/#customising-resource-urls">example above</a>. Because all keyword arguments are passed to this method, you can call the page like so:</p>
+<p>Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the <code>get_url</code> method on your resource, similarly to the <a href="../advanced/#customising-resource-urls">example above</a>. Because all keyword arguments are passed to this method, you can call the page like so:</p>
 <pre><code class="python">resources = client.get_resource(page=2)
 </code></pre>
 
 <p>and format the URL in the code like so:</p>
 <pre><code class="python">@classmethod
-def get_single_resource_url(cls, url, uid, **kwargs):
+def get_url(cls, url, uid, **kwargs):
     if kwargs.get('page'):
         return '{}?page={}'.format(
             url,
