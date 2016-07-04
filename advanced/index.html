@@ -91,7 +91,10 @@
                 <li class="toctree-l3"><a href="#customising-resource-urls">Customising Resource URLs</a></li>
                 
             
-                <li class="toctree-l3"><a href="#response-formats">Response formats</a></li>
+                <li class="toctree-l3"><a href="#customise-http-headers">Customise HTTP headers</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#modify-http-request">Modify HTTP Request</a></li>
                 
             
                 <li class="toctree-l3"><a href="#pagination">Pagination</a></li>
@@ -177,8 +180,35 @@
 &gt;&gt;&gt; &lt;Product | 1&gt;
 </code></pre>
 
-<h2 id="response-formats">Response formats</h2>
-<p>TODO</p>
+<h2 id="customise-http-headers">Customise HTTP headers</h2>
+<p>You can customise HTTP headers by subclassing the <code>Client.get_http_headers</code> method. For example:</p>
+<pre><code class="python">class MyClient(clients.BaseClient):
+
+    class Meta:
+        ...
+
+    def get_http_headers(self, client_name, method_name, **kwargs):
+        headers = super(MyClient, self).get_http_headers(client_name, method_name, **kwargs)
+        headers['mission'] = &quot;I'm just trying to get home.&quot;
+        return headers
+
+</code></pre>
+
+<h2 id="modify-http-request">Modify HTTP Request</h2>
+<p>You can modify the prepare HTTP request before it is sent. You might want to do this to modify
+session data or attach SSL certificates. For example:</p>
+<pre><code class="python">class MyClient(clients.BaseClient):
+
+    class Meta:
+        ...
+
+    def prepare_http_request(self, method_type, params, **kwargs):
+        prepared_request = super(MyClient, self).prepare_http_request(method_type, params, **kwargs)
+        # Your modifications here
+        return prepared_request
+
+</code></pre>
+
 <h2 id="pagination">Pagination</h2>
 <p>Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the <code>get_single_resource_url</code> method on your resource, similarly to the <a href="../advanced/#customising-resource-urls">example above</a>. Because all keyword arguments are passed to this method, you can call the page like so:</p>
 <pre><code class="python">resources = client.get_resource(page=2)
