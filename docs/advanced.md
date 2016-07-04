@@ -29,7 +29,7 @@ class Product(BaseResource):
         )
 
     @classmethod
-    def get_single_resource_url(cls, url, uid, **kwargs):
+    def get_url(cls, url, uid, **kwargs):
         """
         Our customised URL.
         """
@@ -85,7 +85,7 @@ class MyClient(clients.BaseClient):
 
 ## Pagination
 
-Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the `get_single_resource_url` method on your resource, similarly to the [example above](/advanced/#customising-resource-urls). Because all keyword arguments are passed to this method, you can call the page like so:
+Pagination is supported by Beckett. Because there are many forms of pagination, we recommend customising the `get_url` method on your resource, similarly to the [example above](/advanced/#customising-resource-urls). Because all keyword arguments are passed to this method, you can call the page like so:
 
 ```python
 resources = client.get_resource(page=2)
@@ -95,7 +95,7 @@ and format the URL in the code like so:
 
 ```python
 @classmethod
-def get_single_resource_url(cls, url, uid, **kwargs):
+def get_url(cls, url, uid, **kwargs):
     if kwargs.get('page'):
         return '{}?page={}'.format(
             url,

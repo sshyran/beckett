@@ -93,7 +93,7 @@ class BaseResource(object):
                 setattr(self, field, value)
 
     @classmethod
-    def get_resource_url(cls, resource, base_url):
+    def _get_resource_url(cls, resource, base_url):
         """
         Construct the URL for talking to this resource.
 
@@ -120,7 +120,7 @@ class BaseResource(object):
         return cls._parse_url_and_validate(url)
 
     @classmethod
-    def get_single_resource_url(cls, url, uid, **kwargs):
+    def get_url(cls, url, uid, **kwargs):
         """
         Construct the URL for talking to an individual resource.
 
@@ -133,10 +133,10 @@ class BaseResource(object):
         returns:
             final_url: The URL for this individual resource
         """
-
-        if uid is None:
-            raise MissingUidException
-        url = '{}/{}'.format(url, uid)
+        if uid:
+            url = '{}/{}'.format(url, uid)
+        else:
+            url = url
         return cls._parse_url_and_validate(url)
 
     @staticmethod
@@ -187,16 +187,12 @@ class HypermediaResource(BaseResource, HTTPClient):
         """
         method_name = self.get_method_name(resource, 'get')
 
-        url = resource.get_resource_url(
-            resource, base_url=base_url
-        )
-
         def get(self, method_type='GET', method_name=method_name,
-                url=url, valid_status_codes=self.Meta.valid_status_codes,
+                valid_status_codes=self.Meta.valid_status_codes,
                 resource=resource, data=None, uid=None, **kwargs):
             return self.call_api(
                 method_type, method_name,
-                url, valid_status_codes, resource,
+                valid_status_codes, resource,
                 data, uid=uid, **kwargs)
 
         setattr(
@@ -220,7 +216,7 @@ class HypermediaResource(BaseResource, HTTPClient):
         valid_values = {}
         for resource in self.Meta.related_resources:
             for k, v in url_values.items():
-                resource_url = resource.get_resource_url(
+                resource_url = resource._get_resource_url(
                     resource, resource.Meta.base_url)
                 if resource_url in v:
                     self.set_related_method(

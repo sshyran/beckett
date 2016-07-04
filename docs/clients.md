@@ -46,7 +46,7 @@ Based on the `methods` in a [Resource](/resources), the following methods are cr
 Additional keyword arguments can be passed and will appear in the following methods were applicable:
 
 ```
-BaseResource.get_single_resource_url
+BaseResource.get_url
 HTTPClient.get_http_headers
 HTTPClient.prepare_http_request
 HypermediaResource.get_http_headers

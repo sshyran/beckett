@@ -59,7 +59,7 @@ Beckett attempts to auto generate URLs based on good RESTful style URI schemes. 
 | PATCH  | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
 | DELETE | Client.Meta.base_url/Resource.Meta.plural_name/uid | `http://myapi.com/api/products/1/` |
 
-URL structures can be completely modified by subclassing the `get_single_resource_url` method on Resources. See [customising resource urls](advanced/#customising-resource-urls) for more information.
+URL structures can be completely modified by subclassing the `get_url` method on Resources. See [customising resource urls](advanced/#customising-resource-urls) for more information.
 
 ## class HypermediaResource
 

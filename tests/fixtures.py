@@ -39,7 +39,7 @@ class BlogResource(resources.BaseResource):
         pagination_key = 'objects'
 
     @classmethod
-    def get_single_resource_url(cls, url, uid, **kwargs):
+    def get_url(cls, url, uid, **kwargs):
         if kwargs.get('page'):
             return '{}?page={}'.format(
                 url,
