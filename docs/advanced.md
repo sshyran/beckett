@@ -47,9 +47,41 @@ client.get_product(uid=1, country='GB')
 >>> <Product | 1>
 ```
 
-## Response formats
+## Customise HTTP headers
 
-TODO
+You can customise HTTP headers by subclassing the `Client.get_http_headers` method. For example:
+
+```python
+class MyClient(clients.BaseClient):
+
+    class Meta:
+        ...
+
+    def get_http_headers(self, client_name, method_name, **kwargs):
+        headers = super(MyClient, self).get_http_headers(client_name, method_name, **kwargs)
+        headers['mission'] = "I'm just trying to get home."
+        return headers
+
+```
+
+
+## Modify HTTP Request
+
+You can modify the prepare HTTP request before it is sent. You might want to do this to modify
+session data or attach SSL certificates. For example:
+
+```python
+class MyClient(clients.BaseClient):
+
+    class Meta:
+        ...
+
+    def prepare_http_request(self, method_type, params, **kwargs):
+        prepared_request = super(MyClient, self).prepare_http_request(method_type, params, **kwargs)
+        # Your modifications here
+        return prepared_request
+
+```
 
 ## Pagination
 
