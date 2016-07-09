@@ -76,14 +76,20 @@
             
                 <li class="toctree-l3"><a href="#class-baseresource">class BaseResource</a></li>
                 
-                    <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
+                    <li><a class="toctree-l4" href="#meta-attributes">Meta Attributes</a></li>
                 
-                    <li><a class="toctree-l4" href="#-url-generation">- URL generation</a></li>
+                    <li><a class="toctree-l4" href="#customisable-methods">Customisable Methods</a></li>
+                
+                    <li><a class="toctree-l4" href="#url-generation">URL Generation</a></li>
+                
+                    <li><a class="toctree-l4" href="#assigning-properties">Assigning properties</a></li>
                 
             
                 <li class="toctree-l3"><a href="#class-hypermediaresource">class HypermediaResource</a></li>
                 
-                    <li><a class="toctree-l4" href="#-meta-attributes_1">- Meta Attributes</a></li>
+                    <li><a class="toctree-l4" href="#meta-attributes_1">Meta Attributes</a></li>
+                
+                    <li><a class="toctree-l4" href="#customisable-methods_1">Customisable Methods</a></li>
                 
             
             </ul>
@@ -101,6 +107,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="../advanced/">Advanced Features</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../exceptions/">Exceptions</a>
         
     </li>
 <li>
@@ -141,36 +154,33 @@
 <h2 id="class-baseresource">class BaseResource</h2>
 <p>A simple representation of a resource.</p>
 <p><strong>Example:</strong></p>
-<pre><code class="python"># myresources.py
-from beckett.resources import BaseResource
+<pre><code class="python"># my_resources.py
+from beckett import resources
 
-class Product(BaseResource):
 
-    class Meta(BaseResource.Meta):
-        name = 'Product'
-        identifier = 'slug'
+class PersonResource(resources.BaseResource):
+    class Meta:
+        name = 'Person'
+        resource_name = 'people'
+        identifier = 'url'
         attributes = (
-            'slug',
             'name',
-            'price',
-            'discount'
+            'birth_year',
+            'eye_color',
+            'gender',
+            'height',
+            'mass',
+            'url',
+        )
+        valid_status_codes = (
+            200,
         )
         methods = (
             'get',
         )
-
 </code></pre>
 
-<p><strong>Usage:</strong></p>
-<pre><code class="bash"># Note: Data will usually come straight from the client method
-&gt;&gt;&gt; data = {'name': 'Tasty product', 'slug': 'sluggy'}
-&gt;&gt;&gt; product = Product(**data)
-&lt;Product | sluggy&gt;
-&gt;&gt;&gt; product.name
-'Tasty product'
-</code></pre>
-
-<h3 id="-meta-attributes">- Meta Attributes</h3>
+<h3 id="meta-attributes">Meta Attributes</h3>
 <table>
 <thead>
 <tr>
@@ -225,7 +235,12 @@ class Product(BaseResource):
 </tr>
 </tbody>
 </table>
-<h3 id="-url-generation">- URL generation</h3>
+<h3 id="customisable-methods">Customisable Methods</h3>
+<p>The BaseResource has methods that can be subclassed and customised:</p>
+<ul>
+<li><a href="../advanced/#customising-resource-urls">BaseResource.get_url</a></li>
+</ul>
+<h3 id="url-generation">URL Generation</h3>
 <p>Beckett attempts to auto generate URLs based on good RESTful style URI schemes. If you do nothing to manipulate the URLs, Beckett will call the following URLs for the related HTTP Methods:</p>
 <table>
 <thead>
@@ -264,6 +279,31 @@ class Product(BaseResource):
 </tbody>
 </table>
 <p>URL structures can be completely modified by subclassing the <code>get_url</code> method on Resources. See <a href="../advanced/#customising-resource-urls">customising resource urls</a> for more information.</p>
+<h3 id="assigning-properties">Assigning properties</h3>
+<p>properties are assigned to the generated class instances based on the JSON data returned. Consider the following JSON data:</p>
+<pre><code class="json">{
+    &quot;name&quot;: &quot;luke skywalker&quot;,
+    &quot;age&quot;: 18,
+    &quot;url&quot;: &quot;https://swapi.co/api/people/1&quot;
+}
+</code></pre>
+
+<p>If our resource declared the following <code>attributes</code> list:</p>
+<pre><code class="python">attributes = (
+    'name',
+    'age',
+)
+</code></pre>
+
+<p>Then the generated instance will have the following properties:</p>
+<pre><code class="python">person.name
+&gt;&gt;&gt; 'luke skywalker'
+person.age
+&gt;&gt;&gt; 18
+</code></pre>
+
+<p>The <code>url</code> property will not be added.</p>
+<p>Beckett will try to determine the type of the property from the JSON type. Beckett does not currently support complex type assignments.</p>
 <h2 id="class-hypermediaresource">class HypermediaResource</h2>
 <p>A simple representation of a resource that supports hypermedia links to related resources.</p>
 <p><strong>Example:</strong></p>
@@ -316,7 +356,7 @@ class Product(HypermediaResource):
 &lt;Designer | Some Designer&gt;
 </code></pre>
 
-<h3 id="-meta-attributes_1">- Meta Attributes</h3>
+<h3 id="meta-attributes_1">Meta Attributes</h3>
 <p>HypermediaResource has two additional, required, attributes that are essential for making hypermedia work</p>
 <table>
 <thead>
@@ -342,6 +382,13 @@ class Product(HypermediaResource):
 </tr>
 </tbody>
 </table>
+<h3 id="customisable-methods_1">Customisable Methods</h3>
+<p>The HypermediaResource has methods that can be subclassed and customised:</p>
+<ul>
+<li><a href="../advanced/#customising-resource-urls">HypermediaResource.get_url</a></li>
+<li><a href="../advanced/#customise-http-headers">HypermediaResource.get_http_headers</a></li>
+<li><a href="../advanced/#modify-http-request">HypermediaResource.prepare_http_request</a></li>
+</ul>
               
             </div>
           </div>

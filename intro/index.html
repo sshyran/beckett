@@ -70,13 +70,15 @@
                 <li class="toctree-l3"><a href="#getting-started">Getting Started</a></li>
                 
             
-                <li class="toctree-l3"><a href="#concepts">Concepts</a></li>
+                <li class="toctree-l3"><a href="#a-basic-client">A Basic Client</a></li>
                 
                     <li><a class="toctree-l4" href="#resources">Resources</a></li>
                 
-                    <li><a class="toctree-l4" href="#clients">Clients</a></li>
+                    <li><a class="toctree-l4" href="#client">Client</a></li>
                 
-                    <li><a class="toctree-l4" href="#example-usage">Example Usage</a></li>
+                    <li><a class="toctree-l4" href="#make-http-calls">Make HTTP calls!</a></li>
+                
+                    <li><a class="toctree-l4" href="#further-reading">Further reading</a></li>
                 
             
             </ul>
@@ -101,6 +103,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="../advanced/">Advanced Features</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../exceptions/">Exceptions</a>
         
     </li>
 <li>
@@ -142,76 +151,89 @@
 <pre><code class="bash">pip install beckett
 </code></pre>
 
-<p>Once installed, use the <a href="../resources">Resources</a> and <a href="../clients">Clients</a> documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.</p>
-<h2 id="concepts">Concepts</h2>
-<p>Beckett has two key base models that you'll need to configure in order to get started: <strong>Resources</strong> and <strong>Clients</strong>.</p>
-<p>We'll using the following snippet of code to explain the basics concepts of Beckett:</p>
-<pre><code class="python"># my_client.py
-from beckett import clients, resources
+<h2 id="a-basic-client">A Basic Client</h2>
+<p>Let's get to grips with Beckett by writing a basic client for communicating with <a href="https://swapi.co">Swapi</a>, the Star Wars API.</p>
+<h3 id="resources">Resources</h3>
+<p>The first thing we'll need to do is declare a <a href="../resources">Resource</a>. Swapi has <a href="http://swapi.co/documentation">many resources</a>, but let's create a resource for just <a href="http://swapi.co/documentation#people">People</a>:</p>
+<pre><code class="python"># my_resources.py
+from beckett import resources
 
 
-class PokemonResource(resources.BaseResource):
-    class Meta(resources.BaseResource.Meta):
-        name = 'Pokemon'
-        identifier = 'id'
+class PersonResource(resources.BaseResource):
+    class Meta:
+        name = 'Person'
+        resource_name = 'people'
+        identifier = 'url'
         attributes = (
-            'id',
             'name',
+            'birth_year',
+            'eye_color',
+            'gender',
+            'height',
+            'mass',
+            'url',
+        )
+        valid_status_codes = (
+            200,
         )
         methods = (
             'get',
         )
+</code></pre>
 
+<p>Everything in Beckett is defined using Python classes and Meta classes. The definitions are then used by Beckett to construct the interface for communicating with the HTTP API for you. This is what we mean when we say Beckett is <em>"convention-based"</em> - it understands RESTful HTTP APIs by default and will adapt the definitions you write to fit within it.</p>
+<p>In the example above we've defined a series of properties for this resource. Let's talk about each of them now to understand what they mean:</p>
+<ul>
+<li><strong>name</strong>: This string will be used by Beckett in Python <code>__repr__</code> and <code>__unicode__</code> methods.</li>
+<li><strong>resource_name</strong>: Sometimes the resource name differs slightly because the plural of a resource is different from the singular. RESTful HTTP APIs conventionally use plural names in URIs. This property is not required and Beckett will try to guess the plural name of the <strong>name</strong> property. In this case it will guess <code>persons</code>, which doesn't fit with our API. Luckily, the <strong>resource_name</strong> attribute is provided so we can avoid this behaviour if we want.</li>
+<li><strong>identifier</strong>: This attribute is used to determine the unique identifying attribute of the resource. It will be used in Python <code>__repr__</code> and <code>__unicode__</code> methods.</li>
+<li><strong>attributes</strong>: This is a tuple of strings, declaring the attributes you want to see from the resource when it is generated. If you look at <a href="http://swapi.co/api/people/1/">an example API response</a> from Swapi, you will see these attributes listed. You can read more about <a href="../resources/#resource-properties">Resource attributes here</a>. You can use this to white-list specific attributes.</li>
+<li><strong>valid_status_codes</strong>: This is a tuple of integers, declaring the HTTP response codes you consider "valid". Some HTTP APIs behave differently and certain responses are expected, such as <code>202</code> or <code>404</code>. If an HTTP response code is received that is not in the list, Beckett will raise an exception.</li>
+<li><strong>methods</strong>: This is a tuple of strings, declaring the HTTP methods that can be used with this resource. Beckett will use this tuple to generate python methods.</li>
+</ul>
+<p>You can read more about resources on the <a href="../resources">Resources</a> page.</p>
+<h3 id="client">Client</h3>
+<p>Now that we've got our Resource created, let's build a Client to start using it.</p>
+<pre><code class="python">
+# my_client.py
+from .my_resources import PersonResource
 
-class PokemonClient(clients.BaseClient):
-    class Meta(clients.BaseClient.Meta):
-        base_url = 'https://pokeapi.co/api/v1/'
+class StarWarsClient(clients.BaseClient):
+    class Meta:
+        name = 'Star Wars API Client'
+        base_url = 'https://swapi.co/api/'
         resources = (
-            PokemonResource,
+            PersonResource,
         )
 </code></pre>
 
-<h3 id="resources">Resources</h3>
-<p>A <strong>Resource</strong> object represents a single resource in your API service:</p>
-<p>Resources have a series of attributes in their <code>Meta</code> class. These define the attributes and behaviour of a resource.</p>
-<p>In this instance, we are naming our resource with the <code>name</code> attribute. We're defining a unique <code>identifier</code>
-attribute to use when querying this resource, and setting a white list of <code>attributes</code> that we want to display on this resource.</p>
-<p>A full list of available attributes can be found on the <a href="../resources">Resources</a> page.</p>
-<h3 id="clients">Clients</h3>
-<p>A typical Beckett-based API client only needs one <strong>Client</strong> instance. However, many clients can be used for versioning.</p>
-<p>Clients can be configured using <code>Meta</code> class attributes, and inherits the defaults from the <code>BaseClient</code>.</p>
-<p>In this instance we're setting the <code>base_url</code> of the API, as well as a list of <code>resources</code> that this API supports.</p>
-<p>A list of available attributes can be found on the <a href="../clients">Clients</a> page.</p>
-<h3 id="example-usage">Example Usage</h3>
+<p>Just like the Resource, we can declare a bunch of properties on our Client:</p>
+<ul>
+<li><strong>name</strong> - This property will be used in HTTP headers as well as in <code>__repr__</code> and <code>__unicode__</code> methods.</li>
+<li><strong>base_url</strong> - This is the base url for the API. Beckett will use this to construct the URL when making HTTP requests.</li>
+<li><strong>resources</strong> - This is a tuple of <code>Resource</code> classes that you want the client to communicate with.</li>
+</ul>
+<p>You can read more about clients on the <a href="../clients">Clients</a> page.</p>
+<h3 id="make-http-calls">Make HTTP calls!</h3>
 <p>We can now start calling the API!</p>
-<pre><code class="python">from my_client import PokemonClient
+<pre><code class="bash">from .my_resources import PersonResource
+from .my_client import StarWarsClient
 
-my_client = PokemonClient()
-result = my_client.get_pokemon(1)[0]
+swapi = StarWarsClient()
+results_list = swapi.get_person(uid=1)
 
-isinstance(result, PokemonResource)
+person = results_list[0]
+
+isinstance(result, PersonResource)
 &gt;&gt;&gt; True
-result.name
-'Bulbasaur'
+person.name
+'Luke Skywalker'
 </code></pre>
 
-<p>Our client generates a collection of methods for every registered resource and understands how to properly call each method.</p>
-<p>A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:</p>
-<pre><code class="python">my_client.get_pokemon(uid=1)
-</code></pre>
-
-<p>The <code>PokemonClient</code> will look at <code>PokemonResource</code> <code>methods</code> attribute to determine what HTTP methods are available on it. The default is:</p>
-<pre><code class="python">methods = (
-        'get'
-    )
-</code></pre>
-
-<p>The <code>PokemonResource</code> will also set the resource name as the lower-case of the <code>name</code> attribute. However, if this resource is called something different in the API we can set it ourselves in <code>PokemonResource</code>:</p>
-<pre><code class="python">resource = 'pokemons'
-</code></pre>
-
-<p>The <code>1</code> will be used by the <code>identifier</code> attribute on <code>PokemonResource</code> to help construct the URL when making HTTP calls.</p>
-<p>That's the basics! We recommend reading the <a href="../resources">resources</a> and <a href="../clients">clients</a> documentation to understand the full breadth of possibilties with Beckett, or read the <a href="../advanced">advanced</a> tips guide for some more exciting features.</p>
+<p>Beckett has generated a <code>get_person</code> method because it has read the <code>PersonResource</code> and seen which HTTP methods it wants. This method conventionally takes a single parameter <code>uid</code>. These generated methods also except arbitrary keyword arguments for customisation. You can read more about this in the <a href="../advanced">advanced</a> section.</p>
+<p>The response is a list of <code>PersonResource</code> instances. Beckett infers the JSON response and transforms the JSON values into attributes on each instance, so we can query <code>person.name</code>.</p>
+<h3 id="further-reading">Further reading</h3>
+<p>This guide has demonstrated the basics of Beckett, using most of the conventionally-based stuff. However, most HTTP APIs are not always perfectly RESTful. Luckily, Beckett is designed to be flexible enough to provide ways to support other HTTP APIs, we recommend reading the <a href="../advanced">advanced</a> guide if you're looking to modify Beckett's behaviour.</p>
               
             </div>
           </div>

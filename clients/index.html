@@ -83,11 +83,13 @@
             
                 <li class="toctree-l3"><a href="#class-baseclients">class BaseClients</a></li>
                 
+                    <li><a class="toctree-l4" href="#meta-attributes">Meta Attributes</a></li>
+                
                     <li><a class="toctree-l4" href="#generated-methods">Generated Methods</a></li>
                 
-                    <li><a class="toctree-l4" href="#method-arguments">Method arguments</a></li>
+                    <li><a class="toctree-l4" href="#customisable-methods">Customisable Methods</a></li>
                 
-                    <li><a class="toctree-l4" href="#-meta-attributes">- Meta Attributes</a></li>
+                    <li><a class="toctree-l4" href="#passing-additional-keyword-arguments">Passing additional keyword arguments</a></li>
                 
             
             </ul>
@@ -98,6 +100,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="../advanced/">Advanced Features</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../exceptions/">Exceptions</a>
         
     </li>
 <li>
@@ -138,38 +147,74 @@
 <h2 id="class-baseclients">class BaseClients</h2>
 <p>A simple HTTP API client.</p>
 <p><strong>Example:</strong></p>
-<pre><code class="python"># clients.py
-from beckett.clients import BaseClient
-from .resources import ProductResource
+<pre><code class="python"># my_client.py
 
-class MyClient(BaseClient):
+from .my_resources import PersonResource
 
-    class Meta(BaseClient.Meta):
-        base_url = 'http://myapi.com/api'
+class StarWarsClient(clients.BaseClient):
+    class Meta:
+        name = 'Star Wars API Client'
+        base_url = 'https://swapi.co/api/'
         resources = (
-            ProductResource,
+            PersonResource,
         )
-
 </code></pre>
 
 <p><strong>Usage:</strong></p>
-<pre><code class="bash"># Note: Data will usually come straight from the client method
-&gt;&gt;&gt; client = MyClient()
-# get_, post_, put_, delete_, patch_ methods are auto generated for resources
-&gt;&gt;&gt; product = client.get_product(uid='product_slug')
-&gt;&gt;&gt; product.name
-'Tasty product'
+<pre><code class="bash">from .my_resources import PersonResource
+from .my_client import StarWarsClient
+
+swapi = StarWarsClient()
+results_list = swapi.get_person(uid=1)
+
+person = results_list[0]
+
+isinstance(result, PersonResource)
+&gt;&gt;&gt; True
+person.name
+'Luke Skywalker'
 </code></pre>
 
+<h3 id="meta-attributes">Meta Attributes</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Attribute</th>
+<th align="left">Required</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>base_url</code></td>
+<td align="left">Yes</td>
+<td align="left">String</td>
+<td align="left">The Base URL for the HTTP API Service.</td>
+</tr>
+<tr>
+<td align="left"><code>name</code></td>
+<td align="left">Yes</td>
+<td align="left">String</td>
+<td align="left">The name of this client.</td>
+</tr>
+<tr>
+<td align="left"><code>resources</code></td>
+<td align="left">Yes</td>
+<td align="left">Tuple of Resource objects</td>
+<td align="left">A tuple of <a href="../resource">Resource</a> classes that you want to register with this client</td>
+</tr>
+</tbody>
+</table>
 <h3 id="generated-methods">Generated Methods</h3>
-<p>A number of methods are generated on the client when resources are registered.</p>
-<p>Based on the <code>methods</code> in a <a href="../resources">Resource</a>, the following methods are created:</p>
+<p>A number of methods are generated on the client for each resource that is registered.</p>
+<p>Based on the <code>methods</code> in a <a href="../resources">Resource</a>, the following python methods are created:</p>
 <table>
 <thead>
 <tr>
 <th align="left">Method</th>
 <th align="left">HTTP method</th>
-<th align="left">Arguments*</th>
+<th align="left">Required Arguments</th>
 <th align="left">Example</th>
 </tr>
 </thead>
@@ -206,16 +251,7 @@ class MyClient(BaseClient):
 </tr>
 </tbody>
 </table>
-<p>Additional keyword arguments can be passed and will appear in the following methods were applicable:</p>
-<pre><code>BaseResource.get_url
-HTTPClient.get_http_headers
-HTTPClient.prepare_http_request
-HypermediaResource.get_http_headers
-HypermediaResource.prepare_http_request
-</code></pre>
-
-<p>This allows for some flexibility when customising these methods.</p>
-<h3 id="method-arguments">Method arguments</h3>
+<p>Each method has it's own required arguments:</p>
 <table>
 <thead>
 <tr>
@@ -237,31 +273,26 @@ HypermediaResource.prepare_http_request
 </tr>
 </tbody>
 </table>
-<h3 id="-meta-attributes">- Meta Attributes</h3>
-<table>
-<thead>
-<tr>
-<th align="left">Attribute</th>
-<th align="left">Required</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><code>base_url</code></td>
-<td align="left">Yes</td>
-<td align="left">String</td>
-<td align="left">The Base URL for the HTTP API Service.</td>
-</tr>
-<tr>
-<td align="left"><code>resources</code></td>
-<td align="left">Yes</td>
-<td align="left">Tuple of Resource objects</td>
-<td align="left">A tuple of <a href="../resource">Resource</a> classes that you want to register with this client</td>
-</tr>
-</tbody>
-</table>
+<h3 id="customisable-methods">Customisable Methods</h3>
+<p>The BaseClient has methods that can be subclassed and customised:</p>
+<ul>
+<li><a href="../advanced/#customise-http-headers">BaseClient.get_http_headers</a></li>
+<li><a href="../advanced/#modify-http-request">BaseClient.prepare_http_request</a></li>
+</ul>
+<h3 id="passing-additional-keyword-arguments">Passing additional keyword arguments</h3>
+<p>Additional keyword arguments can be passed into the auto-generated methods and will appear in the following methods were applicable:</p>
+<pre><code>BaseResource.get_url
+BaseClient.get_http_headers
+BaseClient.prepare_http_request
+HypermediaResource.get_http_headers
+HypermediaResource.prepare_http_request
+</code></pre>
+
+<p>For example:</p>
+<pre><code class="python">client.get_product(product_id=123, product_country='US')
+</code></pre>
+
+<p>This allows for some flexibility when customising these methods. For more information on how to customise these methods, please read the <a href="../advanced">advanced</a> guide.</p>
               
             </div>
           </div>
