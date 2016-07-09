@@ -61,8 +61,9 @@ You can read more about resources on the [Resources][resources] page.
 Now that we've got our Resource created, let's build a Client to start using it.
 
 ```python
-
 # my_client.py
+from beckett import clients
+
 from .my_resources import PersonResource
 
 class StarWarsClient(clients.BaseClient):
