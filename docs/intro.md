@@ -7,104 +7,108 @@ Beckett can be installed using [pip](https://pypi.python.org/pypi/pip/):
 pip install beckett
 ```
 
-Once installed, use the [Resources][resources] and [Clients][clients] documentation, or read through the concepts tutorial below to familiarise yourself with how Beckett works.
+A Basic Client
+--------------
 
-Concepts
---------
+Let's get to grips with Beckett by writing a basic client for communicating with [Swapi](https://swapi.co), the Star Wars API.
 
-Beckett has two key base models that you'll need to configure in order to get started: **Resources** and **Clients**.
+### Resources
 
-We'll using the following snippet of code to explain the basics concepts of Beckett:
+The first thing we'll need to do is declare a [Resource][resources]. Swapi has [many resources](http://swapi.co/documentation), but let's create a resource for just [People](http://swapi.co/documentation#people):
 
 ```python
-# my_client.py
-from beckett import clients, resources
+# my_resources.py
+from beckett import resources
 
 
-class PokemonResource(resources.BaseResource):
-    class Meta(resources.BaseResource.Meta):
-        name = 'Pokemon'
-        identifier = 'id'
+class PersonResource(resources.BaseResource):
+    class Meta:
+        name = 'Person'
+        resource_name = 'people'
+        identifier = 'url'
         attributes = (
-            'id',
             'name',
+            'birth_year',
+            'eye_color',
+            'gender',
+            'height',
+            'mass',
+            'url',
+        )
+        valid_status_codes = (
+            200,
         )
         methods = (
             'get',
         )
+```
 
+Everything in Beckett is defined using Python classes and Meta classes. The definitions are then used by Beckett to construct the interface for communicating with the HTTP API for you. This is what we mean when we say Beckett is _"convention-based"_ - it understands RESTful HTTP APIs by default and will adapt the definitions you write to fit within it.
 
-class PokemonClient(clients.BaseClient):
-    class Meta(clients.BaseClient.Meta):
-        base_url = 'https://pokeapi.co/api/v1/'
+In the example above we've defined a series of properties for this resource. Let's talk about each of them now to understand what they mean:
+
+* **name**: This string will be used by Beckett in Python `__repr__` and `__unicode__` methods.
+* **resource_name**: Sometimes the resource name differs slightly because the plural of a resource is different from the singular. RESTful HTTP APIs conventionally use plural names in URIs. This property is not required and Beckett will try to guess the plural name of the **name** property. In this case it will guess `persons`, which doesn't fit with our API. Luckily, the **resource_name** attribute is provided so we can avoid this behaviour if we want.
+* **identifier**: This attribute is used to determine the unique identifying attribute of the resource. It will be used in Python `__repr__` and `__unicode__` methods.
+* **attributes**: This is a tuple of strings, declaring the attributes you want to see from the resource when it is generated. If you look at [an example API response](http://swapi.co/api/people/1/) from Swapi, you will see these attributes listed. You can read more about [Resource attributes here](resources/#resource-properties). You can use this to white-list specific attributes.
+* **valid_status_codes**: This is a tuple of integers, declaring the HTTP response codes you consider "valid". Some HTTP APIs behave differently and certain responses are expected, such as `202` or `404`. If an HTTP response code is received that is not in the list, Beckett will raise an exception.
+* **methods**: This is a tuple of strings, declaring the HTTP methods that can be used with this resource. Beckett will use this tuple to generate python methods.
+
+You can read more about resources on the [Resources][resources] page.
+
+### Client
+
+Now that we've got our Resource created, let's build a Client to start using it.
+
+```python
+
+# my_client.py
+from .my_resources import PersonResource
+
+class StarWarsClient(clients.BaseClient):
+    class Meta:
+        name = 'Star Wars API Client'
+        base_url = 'https://swapi.co/api/'
         resources = (
-            PokemonResource,
+            PersonResource,
         )
 ```
 
-### Resources
+Just like the Resource, we can declare a bunch of properties on our Client:
 
-A **Resource** object represents a single resource in your API service:
+* **name** - This property will be used in HTTP headers as well as in `__repr__` and `__unicode__` methods.
+* **base_url** - This is the base url for the API. Beckett will use this to construct the URL when making HTTP requests.
+* **resources** - This is a tuple of `Resource` classes that you want the client to communicate with.
 
-Resources have a series of attributes in their `Meta` class. These define the attributes and behaviour of a resource.
+You can read more about clients on the [Clients][clients] page.
 
-In this instance, we are naming our resource with the `name` attribute. We're defining a unique `identifier`
-attribute to use when querying this resource, and setting a white list of `attributes` that we want to display on this resource.
-
-A full list of available attributes can be found on the [Resources][resources] page.
-
-### Clients
-
-A typical Beckett-based API client only needs one **Client** instance. However, many clients can be used for versioning.
-
-Clients can be configured using `Meta` class attributes, and inherits the defaults from the `BaseClient`.
-
-In this instance we're setting the `base_url` of the API, as well as a list of `resources` that this API supports.
-
-A list of available attributes can be found on the [Clients](/clients) page.
-
-### Example Usage
+### Make HTTP calls!
 
 We can now start calling the API!
 
-```python
-from my_client import PokemonClient
+```bash
+from .my_resources import PersonResource
+from .my_client import StarWarsClient
 
-my_client = PokemonClient()
-result = my_client.get_pokemon(1)[0]
+swapi = StarWarsClient()
+results_list = swapi.get_person(uid=1)
 
-isinstance(result, PokemonResource)
+person = results_list[0]
+
+isinstance(result, PersonResource)
 >>> True
-result.name
-'Bulbasaur'
+person.name
+'Luke Skywalker'
 ```
 
-Our client generates a collection of methods for every registered resource and understands how to properly call each method.
+Beckett has generated a `get_person` method because it has read the `PersonResource` and seen which HTTP methods it wants. This method conventionally takes a single parameter `uid`. These generated methods also except arbitrary keyword arguments for customisation. You can read more about this in the [advanced][advanced] section.
 
-A lot of stuff is automatically generated here for us, so let's break it down and go through it line by line:
-
-```python
-my_client.get_pokemon(uid=1)
-```
-
-The `PokemonClient` will look at `PokemonResource` `methods` attribute to determine what HTTP methods are available on it. The default is:
-
-```python
-methods = (
-        'get'
-    )
-```
-
-The `PokemonResource` will also set the resource name as the lower-case of the `name` attribute. However, if this resource is called something different in the API we can set it ourselves in `PokemonResource`:
-
-```python
-resource = 'pokemons'
-```
-
-The `1` will be used by the `identifier` attribute on `PokemonResource` to help construct the URL when making HTTP calls.
+The response is a list of `PersonResource` instances. Beckett infers the JSON response and transforms the JSON values into attributes on each instance, so we can query `person.name`.
 
 
-That's the basics! We recommend reading the [resources][resources] and [clients][clients] documentation to understand the full breadth of possibilties with Beckett, or read the [advanced][advanced] tips guide for some more exciting features.
+### Further reading
+
+This guide has demonstrated the basics of Beckett, using most of the conventionally-based stuff. However, most HTTP APIs are not always perfectly RESTful. Luckily, Beckett is designed to be flexible enough to provide ways to support other HTTP APIs, we recommend reading the [advanced][advanced] guide if you're looking to modify Beckett's behaviour.
 
 [resources]: /resources
 [clients]: /clients

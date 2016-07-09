@@ -49,7 +49,7 @@ client.get_product(uid=1, country='GB')
 
 ## Customise HTTP headers
 
-You can customise HTTP headers by subclassing the `Client.get_http_headers` method. For example:
+You can customise HTTP headers by subclassing the `BaseClient.get_http_headers` method. For example:
 
 ```python
 class MyClient(clients.BaseClient):
@@ -67,7 +67,7 @@ class MyClient(clients.BaseClient):
 
 ## Modify HTTP Request
 
-You can modify the prepare HTTP request before it is sent. You might want to do this to modify
+You can modify the prepared HTTP request before it is sent. You might want to do this to modify
 session data or attach SSL certificates. For example:
 
 ```python

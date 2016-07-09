@@ -7,3 +7,4 @@ pages:
     - Resources: 'resources.md'
     - Clients: 'clients.md'
     - Advanced Features: 'advanced.md'
+    - Exceptions: 'exceptions.md'
