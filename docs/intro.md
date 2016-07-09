@@ -111,6 +111,8 @@ The response is a list of `PersonResource` instances. Beckett infers the JSON re
 
 This guide has demonstrated the basics of Beckett, using most of the conventionally-based stuff. However, most HTTP APIs are not always perfectly RESTful. Luckily, Beckett is designed to be flexible enough to provide ways to support other HTTP APIs, we recommend reading the [advanced][advanced] guide if you're looking to modify Beckett's behaviour.
 
+A working example of this code can be found in the [GitHub repository](https://github.com/phalt/beckett/blob/master/example/main.py).
+
 [resources]: /resources
 [clients]: /clients
 [advanced]: /advanced
