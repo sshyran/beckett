@@ -16,7 +16,11 @@ import pytest
 
 import responses
 
-from .fixtures import BlogResource, BlogTestClient, PlainTestClient
+from .fixtures import (
+    BlogResource, BlogTestClient,
+    NoDefaultsClient, NoDefaultsResource,
+    PlainTestClient
+)
 
 
 @responses.activate
@@ -103,7 +107,7 @@ def test_custom_client_delete_methods():
                   body='',
                   status=204,
                   content_type='application/json')
-    result = client.delete_blog(uid=1)
+    client.delete_blog(uid=1)
     assert len(responses.calls) == 1
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'
     assert responses.calls[0].request.method == 'DELETE'
@@ -252,3 +256,27 @@ def test_custom_client_get_paginated_response_methods():
     assert resource.title == 'blog title'
     resource2 = result[1]
     assert resource2.title == 'Second title'
+
+
+@responses.activate
+def test_client_no_defaults():
+    """
+    Make HTTP GET calls with a resource that is missing defaults.
+    This should still work!
+    """
+
+    client = NoDefaultsClient()
+    # Add a mocked response for a single resource
+    responses.add(responses.GET, 'http://dev/api/people/1',
+                  body='''
+                    {"id": 1, "title": "blog title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    result = client.get_person(uid=1)
+    assert len(responses.calls) == 1
+    assert responses.calls[0].request.url == 'http://dev/api/people/1'
+    assert responses.calls[0].request.method == 'GET'
+    assert isinstance(result, list)
+    assert isinstance(result[0], NoDefaultsResource)

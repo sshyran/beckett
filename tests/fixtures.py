@@ -120,3 +120,33 @@ class HypermediaBlogTestClient(clients.BaseClient):
             HypermediaBlogsResource,
             HypermediaAuthorsResource,
         )
+
+
+class NoDefaultsResource(resources.BaseResource):
+    """
+    A class without the following defaults set:
+        - pagination_key
+        - valid_status_codes
+
+    It should still be able to use defaults for this
+    """
+    class Meta:
+        name = 'Person'
+        resource_name = 'people'
+        identifier = 'url'
+        attributes = (
+            'name',
+        )
+        methods = (
+            'get',
+        )
+
+
+class NoDefaultsClient(clients.BaseClient):
+
+    class Meta(clients.BaseClient.Meta):
+        name = 'no_defaults_test_client'
+        base_url = 'http://dev/api'
+        resources = (
+            NoDefaultsResource,
+        )

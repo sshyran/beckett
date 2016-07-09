@@ -4,7 +4,11 @@ import types
 
 import requests
 
-from .constants import SINGLE_RESOURCE_METHODS, VALID_METHODS
+from .constants import (
+    DEFAULT_VALID_STATUS_CODES,
+    SINGLE_RESOURCE_METHODS,
+    VALID_METHODS
+)
 from .exceptions import InvalidStatusCodeError
 
 
@@ -117,7 +121,7 @@ class HTTPClient(object):
                 return [resource(**x) for x in data]
             else:
                 # Try and find the paginated resources
-                key = resource.Meta.pagination_key
+                key = getattr(resource.Meta, 'pagination_key', None)
                 if isinstance(data.get(key), list):
                     # Only return the paginated responses
                     return [resource(**x) for x in data.get(key)]
@@ -188,7 +192,11 @@ class BaseClient(HTTPClient):
         """
         method_name = resource_class.get_method_name(
             resource_class, method_type)
-        valid_status_codes = resource_class.Meta.valid_status_codes
+        valid_status_codes = getattr(
+            resource_class.Meta,
+            'valid_status_codes',
+            DEFAULT_VALID_STATUS_CODES
+        )
 
         # I know what you're going to say, and I'd love help making this nicer
         # reflection assigns the same memory addr to each method otherwise.
