@@ -194,8 +194,9 @@ class PersonResource(resources.BaseResource):
 <p>You can read more about resources on the <a href="../resources">Resources</a> page.</p>
 <h3 id="client">Client</h3>
 <p>Now that we've got our Resource created, let's build a Client to start using it.</p>
-<pre><code class="python">
-# my_client.py
+<pre><code class="python"># my_client.py
+from beckett import clients
+
 from .my_resources import PersonResource
 
 class StarWarsClient(clients.BaseClient):
@@ -234,6 +235,7 @@ person.name
 <p>The response is a list of <code>PersonResource</code> instances. Beckett infers the JSON response and transforms the JSON values into attributes on each instance, so we can query <code>person.name</code>.</p>
 <h3 id="further-reading">Further reading</h3>
 <p>This guide has demonstrated the basics of Beckett, using most of the conventionally-based stuff. However, most HTTP APIs are not always perfectly RESTful. Luckily, Beckett is designed to be flexible enough to provide ways to support other HTTP APIs, we recommend reading the <a href="../advanced">advanced</a> guide if you're looking to modify Beckett's behaviour.</p>
+<p>A working example of this code can be found in the <a href="https://github.com/phalt/beckett/blob/master/example/main.py">GitHub repository</a>.</p>
               
             </div>
           </div>
