@@ -22,7 +22,7 @@ test_requirements = [
 
 setup(
     name='beckett',
-    version='0.7.0',
+    version='0.7.1',
     description="Hypermedia API Client Framework",
     long_description=readme,
     author="Paul Hallett",
