@@ -21,7 +21,6 @@ class PersonResource(resources.BaseResource):
         methods = (
             'get',
         )
-        pagination_key = None
 
 
 class StarWarsClient(clients.BaseClient):
