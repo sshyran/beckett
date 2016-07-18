@@ -9,7 +9,7 @@ import requests
 
 from .clients import HTTPClient
 from .constants import DEFAULT_VALID_STATUS_CODES
-from .exceptions import BadURLException, MissingUidException
+from .exceptions import BadURLException
 
 if sys.version_info[0] == 3:
     # Py3

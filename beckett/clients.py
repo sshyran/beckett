@@ -9,7 +9,7 @@ from .constants import (
     SINGLE_RESOURCE_METHODS,
     VALID_METHODS
 )
-from .exceptions import InvalidStatusCodeError
+from .exceptions import InvalidStatusCodeError, MissingUidException
 
 
 class HTTPClient(object):
@@ -82,6 +82,8 @@ class HTTPClient(object):
             resource, base_url=self.Meta.base_url
         )
         if method_type in SINGLE_RESOURCE_METHODS:
+            if not uid and not kwargs:
+                raise MissingUidException
             url = resource.get_url(
                 url=url, uid=uid, **kwargs)
         params = {

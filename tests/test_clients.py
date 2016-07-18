@@ -10,7 +10,7 @@ Tests for `beckett.clients` module.
 
 import json
 
-from beckett.exceptions import InvalidStatusCodeError
+from beckett.exceptions import InvalidStatusCodeError, MissingUidException
 
 import pytest
 
@@ -41,6 +41,16 @@ def test_custom_client():
                   content_type='application/json')
     people_resource = client.get_people(uid=1)
     assert people_resource[0].slug == 'blog-title'
+
+
+def test_missing_uid_exception():
+    """
+    Test that passing a missing uid parameter results in an exception
+    """
+    client = PlainTestClient()
+    assert hasattr(client, 'get_people')
+    with pytest.raises(MissingUidException):
+        client.get_people()
 
 
 @responses.activate
@@ -210,9 +220,9 @@ def test_custom_client_get_many_resource_methods():
                   status=200,
                   content_type='application/json')
 
-    result = client.get_blog()
+    result = client.get_blog(page=1)
     assert len(responses.calls) == 1
-    assert responses.calls[0].request.url == 'http://dev/api/blogs'
+    assert responses.calls[0].request.url == 'http://dev/api/blogs?page=1'
     assert responses.calls[0].request.method == 'GET'
     assert isinstance(result, list)
     assert len(result) == 2
