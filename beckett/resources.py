@@ -248,5 +248,5 @@ class HypermediaResource(BaseResource, HTTPClient):
             kwargs.pop(k, None)
         # Assign the rest as attributes.
         for field, value in kwargs.items():
-                if field in self.Meta.attributes:
-                    setattr(self, field, value)
+            if field in self.Meta.attributes:
+                setattr(self, field, value)
