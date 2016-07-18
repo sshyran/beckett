@@ -67,7 +67,7 @@ class BaseResource(object):
         # When receiving paginated results, use this key to render instances.
         pagination_key = 'results'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.set_attributes(**kwargs)
 
     def __str__(self):
@@ -181,7 +181,7 @@ class HypermediaResource(BaseResource, HTTPClient):
         super(HypermediaResource, self).__init__(*args, **kwargs)
         self.session = requests.Session()
 
-    def set_related_method(self, resource, value, base_url):
+    def set_related_method(self, resource):
         """
         Using reflection, generate the related method and return it.
         """
@@ -219,8 +219,7 @@ class HypermediaResource(BaseResource, HTTPClient):
                 resource_url = resource._get_resource_url(
                     resource, resource.Meta.base_url)
                 if resource_url in v:
-                    self.set_related_method(
-                        resource, v, resource.Meta.base_url)
+                    self.set_related_method(resource)
                     valid_values[k] = v
         return valid_values
 
@@ -245,7 +244,8 @@ class HypermediaResource(BaseResource, HTTPClient):
                 pass
         # Assign the valid method values and then remove them from the kwargs
         assigned_values = self.match_urls_to_resources(url_values)
-        [kwargs.pop(k, None) for k in assigned_values.keys()]
+        for k in assigned_values.keys():
+            kwargs.pop(k, None)
         # Assign the rest as attributes.
         for field, value in kwargs.items():
                 if field in self.Meta.attributes:
