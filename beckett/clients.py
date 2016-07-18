@@ -78,7 +78,7 @@ class HTTPClient(object):
         - prepare_http_request
         - get_http_headers
         """
-        url = resource._get_resource_url(
+        url = resource.get_resource_url(
             resource, base_url=self.Meta.base_url
         )
         if method_type in SINGLE_RESOURCE_METHODS:

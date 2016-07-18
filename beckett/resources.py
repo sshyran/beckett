@@ -93,7 +93,7 @@ class BaseResource(object):
                 setattr(self, field, value)
 
     @classmethod
-    def _get_resource_url(cls, resource, base_url):
+    def get_resource_url(cls, resource, base_url):
         """
         Construct the URL for talking to this resource.
 
@@ -216,7 +216,7 @@ class HypermediaResource(BaseResource, HTTPClient):
         valid_values = {}
         for resource in self.Meta.related_resources:
             for k, v in url_values.items():
-                resource_url = resource._get_resource_url(
+                resource_url = resource.get_resource_url(
                     resource, resource.Meta.base_url)
                 if resource_url in v:
                     self.set_related_method(resource)
