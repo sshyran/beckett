@@ -148,8 +148,10 @@
 <p>An invalid status code was returned for this resource.</p>
 <p>The valid_status_codes tuple defined on resources determines which status codes are deemed "valid" when talking to the API.</p>
 <p>InvalidStatusCodeError exceptions provide the following attributes:</p>
-<p><code>status_code</code> - the received status_code
-<code>expected_status_codes</code> - a tuple of the status codes that were expected</p>
+<ul>
+<li><code>status_code</code> - the received status_code</li>
+<li><code>expected_status_codes</code> - a tuple of the status codes that were expected</li>
+</ul>
 <p>These can be used to determine actions based on the status code response:</p>
 <pre><code class="python">try:
     client.get_resource(uid=1234)
