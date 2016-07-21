@@ -201,6 +201,7 @@ def test_custom_client_bad_status_codes():
     except InvalidStatusCodeError as e:
         assert e.status_code == 404
         assert e.expected_status_codes == (200, 201, 204)
+        assert str(e) == 'Received status code: 404, expected: (200, 201, 204)'
     assert len(responses.calls) == 2
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'
     assert responses.calls[0].request.method == 'GET'

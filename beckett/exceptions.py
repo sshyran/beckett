@@ -13,8 +13,8 @@ class InvalidStatusCodeError(Exception):
         self.expected_status_codes = expected_status_codes
 
     def __str__(self):
-        return 'Recieved status code: {}, expected: {}'.format(
-            response.status_code, self.expected_status_codes
+        return 'Received status code: {}, expected: {}'.format(
+            self.status_code, self.expected_status_codes
             )
 
 
