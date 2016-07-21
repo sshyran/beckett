@@ -352,8 +352,8 @@ class Product(HypermediaResource):
 <pre><code class="bash"># Note: Data will usually come straight from the client method
 &gt;&gt;&gt; data = {'name': 'Tasty product', 'slug': 'sluggy', 'designer': 'http://myapi.com/api/designers/some-designer'}
 &gt;&gt;&gt; product = Product(**data)
-&gt;&gt;&gt; product.get_designer(uid='some-designer')
-&lt;Designer | Some Designer&gt;
+&gt;&gt;&gt; product.get_designers()
+[&lt;Designer | Some Designer&gt;]
 </code></pre>
 
 <h3 id="meta-attributes_1">Meta Attributes</h3>
