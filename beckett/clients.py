@@ -112,9 +112,8 @@ class HTTPClient(object):
         """
         if response.status_code not in valid_status_codes:
             raise InvalidStatusCodeError(
-                'Recieved status code: {}, expected: {}'.format(
-                    response.status_code, valid_status_codes
-                    )
+                status_code=response.status_code,
+                expected_status_codes=valid_status_codes
                 )
         if response.content:
             data = response.json()

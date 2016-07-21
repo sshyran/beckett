@@ -195,7 +195,13 @@ def test_custom_client_bad_status_codes():
                   content_type='application/json')
     with pytest.raises(InvalidStatusCodeError):
         client.get_blog(uid=1)
-    assert len(responses.calls) == 1
+    # Now make sure the data we want is present in the exception
+    try:
+        client.get_blog(uid=1)
+    except InvalidStatusCodeError as e:
+        assert e.status_code == 404
+        assert e.expected_status_codes == (200, 201, 204)
+    assert len(responses.calls) == 2
     assert responses.calls[0].request.url == 'http://dev/api/blogs/1'
     assert responses.calls[0].request.method == 'GET'
 
