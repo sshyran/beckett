@@ -147,6 +147,19 @@
 <h3 id="invalidstatuscodeerror">InvalidStatusCodeError</h3>
 <p>An invalid status code was returned for this resource.</p>
 <p>The valid_status_codes tuple defined on resources determines which status codes are deemed "valid" when talking to the API.</p>
+<p>InvalidStatusCodeError exceptions provide the following attributes:</p>
+<p><code>status_code</code> - the received status_code
+<code>expected_status_codes</code> - a tuple of the status codes that were expected</p>
+<p>These can be used to determine actions based on the status code response:</p>
+<pre><code class="python">try:
+    client.get_resource(uid=1234)
+except InvalidStatusCodeError as error:
+    if error.status_code == 404:
+        # Handle 404 responses
+    elif error.status_code == 400:
+        # Handle 400 responses
+</code></pre>
+
 <h3 id="missinguidexception">MissingUidException</h3>
 <p>A uid attribute was missing!</p>
 <p>If no <code>uid</code> attribute is supplied, this exception will raise.</p>
