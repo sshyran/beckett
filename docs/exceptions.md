@@ -13,8 +13,8 @@ The valid_status_codes tuple defined on resources determines which status codes 
 
 InvalidStatusCodeError exceptions provide the following attributes:
 
-`status_code` - the received status_code
-`expected_status_codes` - a tuple of the status codes that were expected
+* `status_code` - the received status_code
+* `expected_status_codes` - a tuple of the status codes that were expected
 
 These can be used to determine actions based on the status code response:
 
