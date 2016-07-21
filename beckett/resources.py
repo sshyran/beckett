@@ -181,19 +181,24 @@ class HypermediaResource(BaseResource, HTTPClient):
         super(HypermediaResource, self).__init__(*args, **kwargs)
         self.session = requests.Session()
 
-    def set_related_method(self, resource):
+    def set_related_method(self, resource, full_resource_url):
         """
         Using reflection, generate the related method and return it.
         """
         method_name = self.get_method_name(resource, 'get')
 
-        def get(self, method_type='GET', method_name=method_name,
-                valid_status_codes=self.Meta.valid_status_codes,
-                resource=resource, data=None, uid=None, **kwargs):
-            return self.call_api(
-                method_type, method_name,
-                valid_status_codes, resource,
-                data, uid=uid, **kwargs)
+        def get(self, **kwargs):
+            url = full_resource_url
+            params = {
+                'headers': self.get_http_headers(
+                    resource.Meta.name, method_name, **kwargs),
+                'url': url
+            }
+            prepared_request = self.prepare_http_request(
+                'GET', params, **kwargs)
+            response = self.session.send(prepared_request)
+            return self._handle_response(
+                response, resource.Meta.valid_status_codes, resource)
 
         setattr(
             self, method_name,
@@ -202,10 +207,8 @@ class HypermediaResource(BaseResource, HTTPClient):
 
     def match_urls_to_resources(self, url_values):
         """
-        For the list of related resources, and the list of
-        valid URLs, try and match them up.
-
-        If they match, assign a method to this class.
+        For the list of valid URLs, try and match them up
+        to resources in the related_resources attribute.
 
         Args:
             url_values: A dictionary of keys and URL strings that
@@ -219,7 +222,7 @@ class HypermediaResource(BaseResource, HTTPClient):
                 resource_url = resource.get_resource_url(
                     resource, resource.Meta.base_url)
                 if resource_url in v:
-                    self.set_related_method(resource)
+                    self.set_related_method(resource, v)
                     valid_values[k] = v
         return valid_values
 
@@ -231,7 +234,9 @@ class HypermediaResource(BaseResource, HTTPClient):
         attach it to this resource.
         """
         if not self.Meta.related_resources:
+            # Just do what the normal BaseResource does
             super(HypermediaResource, self).set_attributes(**kwargs)
+            return
 
         # Extract all the values that are URLs
         url_values = {}

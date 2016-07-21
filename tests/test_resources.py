@@ -8,12 +8,13 @@ test_resources
 Tests for `beckett.resources` module.
 """
 
-import responses
-
 from beckett.resources import BaseResource
 
+
+import responses
+
 from tests.fixtures import (
-    PeopleResource, HypermediaAuthorsResource, HypermediaBlogsResource
+    HypermediaAuthorsResource, HypermediaBlogsResource, PeopleResource
 )
 
 
@@ -96,5 +97,16 @@ def test_hypermedia_custom_resource_calling():
         'author': 'http://dev/api/authors/1'
     }
     instance = HypermediaBlogsResource(**data)
-    response = instance.get_authors(uid=1)
+    response = instance.get_authors()
     assert isinstance(response[0], HypermediaAuthorsResource)
+    assert responses.calls[0].request.url == 'http://dev/api/authors/1'
+    assert responses.calls[0].request.method == 'GET'
+
+
+def test_parse_url_and_validate_single_instance():
+    """
+    Test the _parse_url_and_validate class method
+    """
+    result = HypermediaBlogsResource._parse_url_and_validate(
+        'http://valid.com')
+    assert result
