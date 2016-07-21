@@ -150,8 +150,8 @@ class Product(HypermediaResource):
 # Note: Data will usually come straight from the client method
 >>> data = {'name': 'Tasty product', 'slug': 'sluggy', 'designer': 'http://myapi.com/api/designers/some-designer'}
 >>> product = Product(**data)
->>> product.get_designer(uid='some-designer')
-<Designer | Some Designer>
+>>> product.get_designers()
+[<Designer | Some Designer>]
 ```
 
 ### Meta Attributes
