@@ -57,6 +57,8 @@ class BaseResource(object):
         identifier = 'id'
         # Acceptable attributes that you want to display in this resource.
         attributes = (identifier,)
+        # subresources are complex attributes within a resource
+        subresources = {}
         # HTTP status codes that are considered "acceptable"
         # when calling this resource
         valid_status_codes = DEFAULT_VALID_STATUS_CODES
@@ -68,6 +70,7 @@ class BaseResource(object):
         pagination_key = 'results'
 
     def __init__(self, **kwargs):
+        self._subresource_map = getattr(self.Meta, 'subresources', {})
         self.set_attributes(**kwargs)
 
     def __str__(self):
@@ -77,6 +80,21 @@ class BaseResource(object):
         """
         return '<{} | {}>'.format(
             self.Meta.name, getattr(self, self.Meta.identifier))
+
+    def set_subresources(self, **kwargs):
+        """
+        For each subresource assigned to this resource, generate the
+        subresource instance and set it as an attribute on this instance.
+        """
+        for attribute_name, resource in self._subresource_map.items():
+            sub_attr = kwargs.get(attribute_name)
+            if isinstance(sub_attr, list):
+                # A list of subresources is supported
+                value = [resource(**x) for x in sub_attr]
+            else:
+                # So is a single resource
+                value = resource(**sub_attr)
+            setattr(self, attribute_name, value)
 
     def set_attributes(self, **kwargs):
         """
@@ -88,6 +106,11 @@ class BaseResource(object):
         Args:
             kwargs: Keyword arguements passed into the init of this class
         """
+        if self._subresource_map:
+            self.set_subresources(**kwargs)
+            for key in self._subresource_map.keys():
+                # Don't let these attributes be overridden later
+                kwargs.pop(key, None)
         for field, value in kwargs.items():
             if field in self.Meta.attributes:
                 setattr(self, field, value)
@@ -244,6 +267,57 @@ class HypermediaResource(BaseResource, HTTPHypermediaClient):
         for k in assigned_values.keys():
             kwargs.pop(k, None)
         # Assign the rest as attributes.
+        for field, value in kwargs.items():
+            if field in self.Meta.attributes:
+                setattr(self, field, value)
+
+
+class SubResource(object):
+    """
+    A "mini resource" within a larger resource. Similarly to BaseResource but
+    minus some features.
+
+    Consider the following JSON for a "Book" resource:
+
+    ```json
+    {
+        "author": {
+            "name": "Earnest"
+        },
+        "title": "A Farewell to Arms"
+    }
+    ```
+    I can use this class to transform the "author" attribute into
+    a typed resource.
+    """
+
+    class Meta:
+        # The name of this Subresource, used in __str__ methods.
+        name = 'SubResource'
+        # The key with which you uniquely identify this resource.
+        identifier = 'id'
+        # Acceptable attributes that you want to display in this resource.
+        attributes = (identifier,)
+
+    def __init__(self, **kwargs):
+        self.set_attributes(**kwargs)
+
+    def __str__(self):
+        """
+        Returns a string representation based on the `self.Meta.name`
+        and `self.Meta.identifier` attribute value.
+        """
+        return '<{} | {}>'.format(
+            self.Meta.name, getattr(self, self.Meta.identifier, ''))
+
+    def set_attributes(self, **kwargs):
+        """
+        Set the resource attributes from the kwargs.
+        Only sets items in the `self.Meta.attributes` white list.
+
+        Args:
+            kwargs: Keyword arguements passed into the init of this class
+        """
         for field, value in kwargs.items():
             if field in self.Meta.attributes:
                 setattr(self, field, value)

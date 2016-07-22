@@ -24,6 +24,9 @@ class PersonResource(resources.BaseResource):
             'mass',
             'url',
         )
+        subresources = {
+            "books": BookSubResource
+        }
         valid_status_codes = (
             200,
         )
@@ -34,15 +37,16 @@ class PersonResource(resources.BaseResource):
 
 ### Meta Attributes
 
-| Attribute            | Required | Type             | Description                                                                                                                                                                                                              |
-|:---------------------|:---------|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name`               | Yes      | String           | The name of this resource instance. Usually a singular noun.                                                                                                                                                             |
-| `resource_name`      | No       | String           | The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the `name` attribute.                                                                        |
-| `identifier`         | Yes      | Int/String       | The key attribute that can be used to identify this attribute. Used when referring to related resources.                                                                                                                 |
-| `attributes`         | Yes      | Tuple of Strings | A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.                                    |
-| `valid_status_codes` | No       | Tuple of Ints    | A tuple list of integers, referring to the HTTP status codes that are considered "acceptable" when communicating with this resource. If a status code is received that does not match this set, an error will be raised. |
-| `methods`            | No       | Tuple of Strings | A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.                               |
-| `pagination_key`     | No       | String           | The key used to look up paginated responses. The value of this key in an API response will be rendered into instances of this resource. See [Pagination](/advanced/#pagination) for more help.                           |
+| Attribute            | Required | Type                                                    | Description                                                                                                                                                                                                              |
+|:---------------------|:---------|:--------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`               | Yes      | String                                                  | The name of this resource instance. Usually a singular noun.                                                                                                                                                             |
+| `resource_name`      | No       | String                                                  | The name of this resource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the `name` attribute.                                                                        |
+| `identifier`         | Yes      | Int/String                                              | The key attribute that can be used to identify this attribute. Used when referring to related resources.                                                                                                                 |
+| `attributes`         | Yes      | Tuple of Strings                                        | A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.                                    |
+| `subresources`       | None     | Dictionary of [SubResource](#class-subresource) classes | A dictionary of [SubResource](#class-subresource) classes. These are complex subresources in your resource that you want to represent as typed isntances.                                                                |
+| `valid_status_codes` | No       | Tuple of Ints                                           | A tuple list of integers, referring to the HTTP status codes that are considered "acceptable" when communicating with this resource. If a status code is received that does not match this set, an error will be raised. |
+| `methods`            | No       | Tuple of Strings                                        | A tuple list of strings, referring to the HTTP methods that can be used with this resource. For each method, a python method will be generated on the client that registers this resource.                               |
+| `pagination_key`     | No       | String                                                  | The key used to look up paginated responses. The value of this key in an API response will be rendered into instances of this resource. See [Pagination](/advanced/#pagination) for more help.                           |
 
 
 ### Customisable Methods
@@ -170,3 +174,55 @@ The HypermediaResource has methods that can be subclassed and customised:
 * [HypermediaResource.get_url](/advanced/#customising-resource-urls)
 * [HypermediaResource.get_http_headers](/advanced/#customise-http-headers)
 * [HypermediaResource.prepare_http_request](/advanced/#modify-http-request)
+
+
+## class SubResource
+
+A "mini resource" within a larger resource. Similarly to BaseResource but
+minus some features.
+
+Consider the following JSON for a "Book" resource:
+
+```json
+{
+    "author": {
+        "name": "Earnest"
+    },
+    "title": "A Farewell to Arms"
+}
+```
+I can use this class to transform the "author" attribute into
+a typed resource:
+
+**Example:**
+```python
+# my_resources.py
+from beckett import resources
+
+
+class AuthorSubResource(resources.SubResource):
+    class Meta:
+        name = 'Author'
+        identifier = 'name'
+        attributes = (
+            'name',
+        )
+
+class BookResource(resources.Resource):
+    class Meta:
+        ...other stuff...
+        subresources = {
+            'author': AuthorSubResource
+        }
+```
+
+### Meta Attributes
+
+| Attribute       | Required | Type             | Description                                                                                                                                                                           |
+|:----------------|:---------|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`          | Yes      | String           | The name of this subresource instance. Usually a singular noun.                                                                                                                       |
+| `resource_name` | No       | String           | The name of this subresource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the `name` attribute.                                  |
+| `identifier`    | Yes      | Int/String       | The key attribute that can be used to identify this attribute. Used when referring to related resources.                                                                              |
+| `attributes`    | Yes      | Tuple of Strings | A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API. |
+
+SubResources can be a list of values or a single value.

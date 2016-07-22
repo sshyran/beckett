@@ -14,7 +14,8 @@ from beckett.resources import BaseResource
 import responses
 
 from tests.fixtures import (
-    HypermediaAuthorsResource, HypermediaBlogsResource, PeopleResource
+    AuthorSubResource, HypermediaAuthorsResource,
+    HypermediaBlogsResource, PeopleResource, SubResourcePeopleResource
 )
 
 
@@ -110,3 +111,45 @@ def test_parse_url_and_validate_single_instance():
     result = HypermediaBlogsResource._parse_url_and_validate(
         'http://valid.com')
     assert result
+
+
+def test_sub_resource_generates_okay():
+    """
+    Test that we generate subresources as expected
+    """
+    data = {
+        "author": {
+            "name": "This is the subresource"
+        },
+        "slug": "this-is-the-resource",
+        "another_thing": "this-is-also-the-resource"
+    }
+
+    instance = SubResourcePeopleResource(**data)
+    assert isinstance(instance.author, AuthorSubResource)
+    assert instance.author.name == 'This is the subresource'
+    assert instance.slug == 'this-is-the-resource'
+
+
+def test_a_list_of_sub_resource_generates_okay():
+    """
+    Test that we generate subresources as expected when they are a list
+    """
+    data = {
+        "author": [
+            {
+                "name": "This is the subresource"
+            },
+            {
+                "name": "This is another subresource"
+            }
+        ],
+        "slug": "this-is-the-resource",
+        "another_thing": "this-is-also-the-resource"
+    }
+
+    instance = SubResourcePeopleResource(**data)
+    assert isinstance(instance.author, list)
+    assert instance.author[0].name == 'This is the subresource'
+    assert instance.author[1].name == 'This is another subresource'
+    assert instance.slug == 'this-is-the-resource'

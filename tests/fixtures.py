@@ -150,3 +150,32 @@ class NoDefaultsClient(clients.BaseClient):
         resources = (
             NoDefaultsResource,
         )
+
+
+# Subresource tests
+
+class AuthorSubResource(resources.SubResource):
+
+    class Meta(resources.BaseResource.Meta):
+        name = 'Author'
+        identifier = 'name'
+        attributes = (
+            'name',
+        )
+
+
+class SubResourcePeopleResource(resources.BaseResource):
+
+    class Meta(resources.BaseResource.Meta):
+        name = 'People'
+        identifier = 'name'
+        attributes = (
+            'slug',
+            'another_thing',
+        )
+        methods = (
+            'get',
+        )
+        subresources = {
+            "author": AuthorSubResource
+        }
