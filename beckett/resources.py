@@ -7,7 +7,7 @@ import inflect
 
 import requests
 
-from .clients import HTTPClient
+from .clients import HTTPHypermediaClient
 from .constants import DEFAULT_VALID_STATUS_CODES
 from .exceptions import BadURLException
 
@@ -166,7 +166,7 @@ class BaseResource(object):
         return final_url
 
 
-class HypermediaResource(BaseResource, HTTPClient):
+class HypermediaResource(BaseResource, HTTPHypermediaClient):
     """
     A HypermediaResource is similar to a BaseResource except
     it understands relationships between attributes that
@@ -188,17 +188,9 @@ class HypermediaResource(BaseResource, HTTPClient):
         method_name = self.get_method_name(resource, 'get')
 
         def get(self, **kwargs):
-            url = full_resource_url
-            params = {
-                'headers': self.get_http_headers(
-                    resource.Meta.name, method_name, **kwargs),
-                'url': url
-            }
-            prepared_request = self.prepare_http_request(
-                'GET', params, **kwargs)
-            response = self.session.send(prepared_request)
-            return self._handle_response(
-                response, resource.Meta.valid_status_codes, resource)
+            return self._call_api_single_related_resource(
+                resource, full_resource_url, method_name, **kwargs
+            )
 
         setattr(
             self, method_name,
