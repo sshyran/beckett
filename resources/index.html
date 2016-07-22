@@ -92,6 +92,11 @@
                     <li><a class="toctree-l4" href="#customisable-methods_1">Customisable Methods</a></li>
                 
             
+                <li class="toctree-l3"><a href="#class-subresource">class SubResource</a></li>
+                
+                    <li><a class="toctree-l4" href="#meta-attributes_2">Meta Attributes</a></li>
+                
+            
             </ul>
         
     </li>
@@ -172,6 +177,9 @@ class PersonResource(resources.BaseResource):
             'mass',
             'url',
         )
+        subresources = {
+            &quot;books&quot;: BookSubResource
+        }
         valid_status_codes = (
             200,
         )
@@ -214,6 +222,12 @@ class PersonResource(resources.BaseResource):
 <td align="left">Yes</td>
 <td align="left">Tuple of Strings</td>
 <td align="left">A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.</td>
+</tr>
+<tr>
+<td align="left"><code>subresources</code></td>
+<td align="left">None</td>
+<td align="left">Dictionary of <a href="#class-subresource">SubResource</a> classes</td>
+<td align="left">A dictionary of <a href="#class-subresource">SubResource</a> classes. These are complex subresources in your resource that you want to represent as typed isntances.</td>
 </tr>
 <tr>
 <td align="left"><code>valid_status_codes</code></td>
@@ -304,8 +318,11 @@ person.age
 
 <p>The <code>url</code> property will not be added.</p>
 <p>Beckett will try to determine the type of the property from the JSON type. Beckett does not currently support complex type assignments.</p>
+<h4 id="subresources">SubResources</h4>
+<p>You can use <a href="#class-subresource">SubResources</a> to generate simple, typed, sub-resources from properties that are dictionaries. These can be generated using the <code>subresources</code> attribute on the <code>BaseResource</code> meta class.</p>
+<p><strong>Note</strong> that you can set any type of <code>Resource</code> class as a subresource, not just <code>SubResource</code>.</p>
 <h2 id="class-hypermediaresource">class HypermediaResource</h2>
-<p>A simple representation of a resource that supports hypermedia links to related resources.</p>
+<p>A simple representation of a resource that supports hypermedia links and methods to related resources. Beckett will attempt to match related resources with the URL patterns it knows about it's resources, in order to discover them.</p>
 <p><strong>Example:</strong></p>
 <pre><code class="python"># myresources.py
 from beckett.resources import HypermediaResource
@@ -389,6 +406,78 @@ class Product(HypermediaResource):
 <li><a href="../advanced/#customise-http-headers">HypermediaResource.get_http_headers</a></li>
 <li><a href="../advanced/#modify-http-request">HypermediaResource.prepare_http_request</a></li>
 </ul>
+<h2 id="class-subresource">class SubResource</h2>
+<p>A basic version of <code>BaseResource</code> without any URL-generating abilities. It should be used for a plain JSON dictionary that you want to represent as a typed instance. It cannot be used with Beckett's <a href="../clients">clients</a>.</p>
+<p>Consider the following JSON for a "Book" resource:</p>
+<pre><code class="json">{
+    &quot;author&quot;: {
+        &quot;name&quot;: &quot;Earnest&quot;
+    },
+    &quot;title&quot;: &quot;A Farewell to Arms&quot;
+}
+</code></pre>
+
+<p>I can use this class to transform the "author" attribute into
+a typed resource:</p>
+<p><strong>Example:</strong></p>
+<pre><code class="python"># my_resources.py
+from beckett import resources
+
+
+class AuthorSubResource(resources.SubResource):
+    class Meta:
+        name = 'Author'
+        identifier = 'name'
+        attributes = (
+            'name',
+        )
+
+class BookResource(resources.Resource):
+    class Meta:
+        ...other stuff...
+        subresources = {
+            'author': AuthorSubResource
+        }
+</code></pre>
+
+<h3 id="meta-attributes_2">Meta Attributes</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Attribute</th>
+<th align="left">Required</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>name</code></td>
+<td align="left">Yes</td>
+<td align="left">String</td>
+<td align="left">The name of this subresource instance. Usually a singular noun.</td>
+</tr>
+<tr>
+<td align="left"><code>resource_name</code></td>
+<td align="left">No</td>
+<td align="left">String</td>
+<td align="left">The name of this subresource used in the url. Usually a plural noun. If not set, we'll attempt to make a pluralised version of the <code>name</code> attribute.</td>
+</tr>
+<tr>
+<td align="left"><code>identifier</code></td>
+<td align="left">Yes</td>
+<td align="left">Int/String</td>
+<td align="left">The key attribute that can be used to identify this attribute. Used when referring to related resources.</td>
+</tr>
+<tr>
+<td align="left"><code>attributes</code></td>
+<td align="left">Yes</td>
+<td align="left">Tuple of Strings</td>
+<td align="left">A tuple list of strings, referring to the key attributes that you want to populate the resource instances with. You can use this for whitelisting and versioning changes in your API.</td>
+</tr>
+</tbody>
+</table>
+<p>SubResources can be a list of values or a single value.</p>
               
             </div>
           </div>
