@@ -103,9 +103,15 @@ The `url` property will not be added.
 
 Beckett will try to determine the type of the property from the JSON type. Beckett does not currently support complex type assignments.
 
+#### SubResources
+
+You can use [SubResources](#class-subresource) to generate simple, typed, sub-resources from properties that are dictionaries. These can be generated using the `subresources` attribute on the `BaseResource` meta class.
+
+**Note** that you can set any type of `Resource` class as a subresource, not just `SubResource`.
+
 ## class HypermediaResource
 
-A simple representation of a resource that supports hypermedia links to related resources.
+A simple representation of a resource that supports hypermedia links and methods to related resources. Beckett will attempt to match related resources with the URL patterns it knows about it's resources, in order to discover them.
 
 **Example:**
 ```python
@@ -178,8 +184,7 @@ The HypermediaResource has methods that can be subclassed and customised:
 
 ## class SubResource
 
-A "mini resource" within a larger resource. Similarly to BaseResource but
-minus some features.
+A basic version of `BaseResource` without any URL-generating abilities. It should be used for a plain JSON dictionary that you want to represent as a typed instance. It cannot be used with Beckett's [clients](/clients).
 
 Consider the following JSON for a "Book" resource:
 
