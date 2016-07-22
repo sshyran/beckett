@@ -82,8 +82,7 @@ class HypermediaAuthorsResource(resources.HypermediaResource):
         identifier = 'name'
         attributes = (
             'name',
-            'slug',
-            'another_thing',
+            'title',
         )
         methods = (
             'get',

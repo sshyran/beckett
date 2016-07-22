@@ -215,10 +215,21 @@ class HypermediaResource(BaseResource, HTTPHypermediaClient):
                 resource, full_resource_url, method_name, **kwargs
             )
 
-        setattr(
-            self, method_name,
-            types.MethodType(get, self)
-        )
+        def get_list(self, **kwargs):
+            return self._call_api_many_related_resources(
+                resource, full_resource_url, method_name, **kwargs
+            )
+
+        if isinstance(full_resource_url, list):
+            setattr(
+                self, method_name,
+                types.MethodType(get_list, self)
+            )
+        else:
+            setattr(
+                self, method_name,
+                types.MethodType(get, self)
+            )
 
     def match_urls_to_resources(self, url_values):
         """
@@ -236,7 +247,11 @@ class HypermediaResource(BaseResource, HTTPHypermediaClient):
             for k, v in url_values.items():
                 resource_url = resource.get_resource_url(
                     resource, resource.Meta.base_url)
-                if resource_url in v:
+                if isinstance(v, list):
+                    if all([resource_url in i for i in v]):
+                        self.set_related_method(resource, v)
+                        valid_values[k] = v
+                elif resource_url in v:
                     self.set_related_method(resource, v)
                     valid_values[k] = v
         return valid_values
@@ -257,7 +272,10 @@ class HypermediaResource(BaseResource, HTTPHypermediaClient):
         url_values = {}
         for k, v in kwargs.items():
             try:
-                self._parse_url_and_validate(v)
+                if isinstance(v, list):
+                    [self._parse_url_and_validate(i) for i in v]
+                else:
+                    self._parse_url_and_validate(v)
                 url_values[k] = v
             except BadURLException:
                 # This is a badly formed URL or not a URL at all, so skip

@@ -104,6 +104,86 @@ def test_hypermedia_custom_resource_calling():
     assert responses.calls[0].request.method == 'GET'
 
 
+@responses.activate
+def test_hypermedia_custom_resource_calling_list_of_resources():
+    """
+    Test our custom Hypermedia resource make HTTP calls correctly
+    when the related results are a list of urls
+    """
+    responses.add(responses.GET, 'http://dev/api/authors/1',
+                  body='''
+                    {"id": "1", "title": "blog title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    responses.add(responses.GET, 'http://dev/api/authors/2',
+                  body='''
+                    {"id": "2", "title": "second title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    data = {
+        'name': 'Wort wort',
+        'slug': 'sluggy',
+        'not_valid': 'nooo',
+        'author': ['http://dev/api/authors/1', 'http://dev/api/authors/2']
+    }
+    instance = HypermediaBlogsResource(**data)
+    response = instance.get_authors()
+    assert isinstance(response[0], HypermediaAuthorsResource)
+    assert response[0].title == 'blog title'
+    assert response[1].title == 'second title'
+    assert responses.calls[0].request.url == 'http://dev/api/authors/1'
+    assert responses.calls[0].request.method == 'GET'
+    assert responses.calls[1].request.url == 'http://dev/api/authors/2'
+    assert responses.calls[1].request.method == 'GET'
+
+
+@responses.activate
+def test_hypermedia_custom_resource_calling_list_of_resources_many_items():
+    """
+    Test our custom Hypermedia resource make HTTP calls correctly
+    when the related results are a list of urls and the
+    results are a list themselves
+    """
+    responses.add(responses.GET, 'http://dev/api/authors/1',
+                  body='''
+                    [{"id": "1", "title": "blog title",
+                     "slug": "blog-title",
+                     "content": "This is some content"},
+                     {"id": "1", "title": "blog title",
+                      "slug": "blog-title",
+                      "content": "This is some content"}]''',
+                  status=200,
+                  content_type='application/json')
+    responses.add(responses.GET, 'http://dev/api/authors/2',
+                  body='''
+                    {"id": "2", "title": "second title",
+                     "slug": "blog-title",
+                     "content": "This is some content"}''',
+                  status=200,
+                  content_type='application/json')
+    data = {
+        'name': 'Wort wort',
+        'slug': 'sluggy',
+        'not_valid': 'nooo',
+        'author': ['http://dev/api/authors/1', 'http://dev/api/authors/2']
+    }
+    instance = HypermediaBlogsResource(**data)
+    response = instance.get_authors()
+    # The first item is a list of responses
+    assert isinstance(response[0], list)
+    # But the first is just a single item
+    assert isinstance(response[1], HypermediaAuthorsResource)
+    assert response[1].title == 'second title'
+    assert responses.calls[0].request.url == 'http://dev/api/authors/1'
+    assert responses.calls[0].request.method == 'GET'
+    assert responses.calls[1].request.url == 'http://dev/api/authors/2'
+    assert responses.calls[1].request.method == 'GET'
+
+
 def test_parse_url_and_validate_single_instance():
     """
     Test the _parse_url_and_validate class method
