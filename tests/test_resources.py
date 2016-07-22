@@ -128,6 +128,7 @@ def test_sub_resource_generates_okay():
     instance = SubResourcePeopleResource(**data)
     assert isinstance(instance.author, AuthorSubResource)
     assert instance.author.name == 'This is the subresource'
+    assert instance.author.__str__() == '<Author | This is the subresource>'
     assert instance.slug == 'this-is-the-resource'
 
 
