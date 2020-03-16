@@ -12,7 +12,7 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    'requests==2.10.0',
+    'requests==2.20.0',
     'inflect==0.2.5',
     'six==1.10.0'
 ]
