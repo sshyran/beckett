@@ -88,7 +88,10 @@ class BaseResource(object):
         """
         for attribute_name, resource in self._subresource_map.items():
             sub_attr = kwargs.get(attribute_name)
-            if isinstance(sub_attr, list):
+            if sub_attr is None:
+                # Attribute was not found or is null
+                value = None
+            elif isinstance(sub_attr, list):
                 # A list of subresources is supported
                 value = [resource(**x) for x in sub_attr]
             else:
