@@ -11,7 +11,7 @@ coverage==4.2
 docutils==0.12
 flake8==3.0.4
 future==0.15.2
-Jinja2==2.8
+Jinja2==2.11.3
 jinja2-time==0.2.0
 inflect==0.2.5
 MarkupSafe==0.23
